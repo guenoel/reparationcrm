@@ -1,3 +1,19 @@
+/*
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+*/
+
+table {
+    table-layout: auto; /* or fixed */
+    border-collapse: separate; /* or collapse */
+    border-spacing: 2px; /* adjust to desired spacing */
+}
+
+th, td {
+    border: 1px solid #000000; /* adjust border style and color */
+}
+
+th {
+    background-color: #f0f0f0; /* adjust background color */
+}
