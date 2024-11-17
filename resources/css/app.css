@@ -15,17 +15,18 @@
 
 body {
     
-    background: #6c5ce7;
-    color:#FFF;
+    background: #f3f4f6;
+    color:#6a727a;
 }
 
 main {
 	width: 100%;
-	height: 100vh;
+	/* height: 100vh; */
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	padding-top: 2rem;
+    margin-bottom: 2rem;
 }
 
 main h1 {
@@ -41,7 +42,7 @@ main h1 ~ p {
 
 .container {
 	width: 100%;
-	max-width: 780px;
+	/* max-width: 780px; */
 	margin-top: 5rem;
     margin-left: auto;
     margin-right: auto;
@@ -88,10 +89,9 @@ main h1 ~ p {
 }
 
 .devices__list__heading {
-    -ms-grid-columns: 80px 1fr 140px 120px 100px;
-    grid-template-columns: 80px 50px 1fr 120px 120px 120px;
+    -ms-grid-columns: 80px 1fr 1fr 1fr 1fr 80px;
+    grid-template-columns: 80px 1fr 1fr 1fr 1fr 80px;
 }
-
 
 
 .table--items {
@@ -112,8 +112,15 @@ main h1 ~ p {
 
 .devices__list__item {
     border-bottom: 1px solid #e0e0e0;
-    -ms-grid-columns: 80px 1fr 140px 120px 100px;
-    grid-template-columns: 80px 50px 1fr 120px 120px 120px;
+    /* -ms-grid-columns: 80px 1fr 1fr 1fr 1fr 80px;
+    grid-template-columns: 80px 1fr 1fr 1fr 1fr 80px; */
+    -ms-grid-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+}
+
+.devices__list__bottom {
+    background-color:#f1f1f1;
+    border-bottom: 1px solid #e0e0e0;
 }
 
 .card {
@@ -134,10 +141,10 @@ main h1 ~ p {
 }
 
 .btn-icon-success:hover {
-  
-        background: rgb(47, 214, 111);
-        color: white;
-  
+
+    background: rgb(47, 214, 111);
+    color: white;
+
 }
 .btn-icon-danger:hover {
         background: crimson;
@@ -163,15 +170,21 @@ main h1 ~ p {
     display: flex;
 }
 
-.btn-secondary {
-    background: #FFF;
-    color: black;
-}
 .btn {
     border: 1px solid #6a727a;
     padding: 9px 15px;
     border-radius: 4px;
     cursor: pointer;
+}
+
+.btn:hover {
+    background:  #f1f1f1;
+    color: #6a727a;
+}
+
+.btn-secondary {
+    background: #FFF;
+    color: black;
 }
 
 .btn-secondary:hover {

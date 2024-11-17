@@ -141,9 +141,9 @@ const deleteDevice = (id) => {
                             </button>
                         </div>
                     </div>
-                    <div>
+                    <div class="table--items devices__list__bottom">
                         <ul class="pagination">
-                            <a href="#" class="btn" v-for="(link, index) in links" :key="index" v-html="link.label"
+                            <a href="#" class="btn btn-secondary" v-for="(link, index) in links" :key="index" v-html="link.label"
                                 :class="{ active: link.active, disable: !link.url }" @click="changePage(link)"></a>
                         </ul>
                     </div>
