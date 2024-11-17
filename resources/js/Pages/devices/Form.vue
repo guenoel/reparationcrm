@@ -32,19 +32,29 @@ let errors = ref([]);
 
 onMounted(() => {
     // Check if there's a device ID to determine edit mode
-    if (page.props.route && page.props.route.name === 'device.edit') {
+    if (page.props.route && page.props.route.name === 'devices.edit') {
         editMode.value = true;
         deviceId.value = page.props.route.params.id;
-        
         getDevice();
+    } else {
+        getUsers();
     }
-    console.log(page.props.route);
 });
+
+const getUsers = async () => {
+    try {
+        let response = await axios.get('/api/devices/create');
+        page.props.users = response.data.users;
+    } catch (error) {
+        console.error("Error fetching users:", error);
+    }
+};
 
 const getDevice = async () => {
     try {
         let response = await axios.get(`/api/devices/${deviceId.value}/edit`)
-            .then((response) => {
+            //.then((response) => {
+            if (response.data.device) {
                 form.user_id = response.data.device.user_id;
                 form.brand = response.data.device.brand;
                 form.model_name = response.data.device.model_name;
@@ -53,7 +63,12 @@ const getDevice = async () => {
                 form.imei = response.data.device.imei;
                 form.description = response.data.device.description;
                 form.image = response.data.device.image;
-            });
+            //});
+            }
+            if (response.data.users) {
+            page.props.users = response.data.users; // Chargez les utilisateurs si nécessaire
+            }
+            
     } catch (error) {
         console.error("Error fetching device data:", error);
     }
@@ -97,10 +112,10 @@ const handleSave = (values, actions) => {
 const createDevice = (values, actions) => {
     axios.post('/api/devices', form)
         .then((response) => {
-            Inertia.visit('/devices/index/');
-            //router.push('/devices/index/');
-            //window.location.href = route('devices/Index'); // Named route in Laravel
-            toast.fire({ icon: "success", title: "Appareil bien ajouté" });
+            toast.fire({ icon: "success", title: "Appareil ajouté" });
+            setTimeout(() => {
+                Inertia.visit('/devices/index/');
+            }, 2000);
         })
         .catch((error) => {
             if (error.response && error.response.status === 422) {
@@ -114,14 +129,16 @@ const createDevice = (values, actions) => {
 const updateDevice = (values, actions) => {
     axios.put(`/api/devices/${deviceId.value}`, form)
         .then((response) => {
-            Inertia.visit('/devices/index/');
-            //router.push('/devices/index/');
-            //window.location.href = route('devices/Index'); // Named route in Laravel
-            toast.fire({ icon: "success", title: "Appareil bien modifié" });
+            toast.fire({ icon: "success", title: "Appareil modifié" });
+            setTimeout(() => {
+                Inertia.visit('/devices/index/');
+        }, 2000);
         })
         .catch((error) => {
             if (error.response.status === 422) {
                 errors.value = error.response.data.errors;
+            } else {
+                console.error("Error creating device:", error);
             }
         });
 };
@@ -149,7 +166,9 @@ const updateDevice = (values, actions) => {
                     <div class="devices__create__main">
                         <div class="devices__create__main--addInfo card py-2 px-2 bg-white">
                             <p class="mb-1">Utilisateur</p>
-                            <input type="text" class="input" id="user_id" name="user_id" v-model="form.user_id">
+                            <select v-model="form.user_id" class="input" id="user_id" name="user_id">
+                                <option v-for="(name, id) in page.props.users" :key="id" :value="id">{{ name }}</option>
+                            </select>
                             <small style="color:red" v-if="errors.user_id">{{ errors.user_id }}</small>
                             <p class="mb-1">Marque</p>
                             <input type="text" class="input" id="brand" name="brand" v-model="form.brand">

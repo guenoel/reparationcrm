@@ -4,6 +4,7 @@ import { Head } from '@inertiajs/vue3';
 import { Inertia } from '@inertiajs/inertia';
 import { reactive, ref, onMounted } from 'vue';
 import { usePage } from '@inertiajs/vue3';
+//import { useRouter, useRoute } from 'vue-router';
 import axios from 'axios';
 import toast from 'sweetalert2';
 
@@ -20,30 +21,43 @@ const form = reactive({
     image: ''
 });
 
+//const router = useRouter()
+
+//const route = useRoute()
+
+
 const page = usePage();
 const editMode = ref(false);
 let errors = ref([]);
+
+console.log('Page:', page);
+console.log('Page props:', page.props);
+console.log('Page props route:', page.props.route);
 
 onMounted(() => {
     // Check if there's a device ID to determine edit mode
     if (page.props.route && page.props.route.name === 'device.edit') {
         editMode.value = true;
         deviceId.value = page.props.route.params.id;
+        console.log('Props Route name:', page.props.route.name);
         getDevice();
     }
+    console.log('Props Route:', page.props.route);
 });
 
 const getDevice = async () => {
     try {
-        let response = await axios.get(`/api/devices/${deviceId.value}/edit`);
-        form.user_id = response.data.device.user_id;
-        form.brand = response.data.device.brand;
-        form.model_name = response.data.device.model_name;
-        form.model_number = response.data.device.model_number;
-        form.serial_number = response.data.device.serial_number;
-        form.imei = response.data.device.imei;
-        form.description = response.data.device.description;
-        form.image = response.data.device.image;
+        let response = await axios.get(`/api/devices/${deviceId.value}/edit`)
+            //.then((response) => {
+                form.user_id = response.data.device.user_id;
+                form.brand = response.data.device.brand;
+                form.model_name = response.data.device.model_name;
+                form.model_number = response.data.device.model_number;
+                form.serial_number = response.data.device.serial_number;
+                form.imei = response.data.device.imei;
+                form.description = response.data.device.description;
+                form.image = response.data.device.image;
+            //});
     } catch (error) {
         console.error("Error fetching device data:", error);
     }
@@ -76,33 +90,12 @@ const handleFileChange = (e) => {
     }
 };
 
-const handleSave = (values, actions) => {
-    if (editMode.value) {
-        updateDevice(values, actions);
-    } else {
-        createDevice(values, actions);
-    }
-};
-
-const createDevice = (values, actions) => {
-    axios.post('/api/devices', form)
-        .then((response) => {
-            Inertia.visit('/devices/index/');
-            toast.fire({ icon: "success", title: "Appareil bien ajouté" });
-        })
-        .catch((error) => {
-            if (error.response && error.response.status === 422) {
-                errors.value = error.response.data.errors;
-            } else {
-                console.error("Error creating device:", error);
-            }
-        });
-};
-
 const updateDevice = (values, actions) => {
     axios.put(`/api/devices/${deviceId.value}`, form)
         .then((response) => {
             Inertia.visit('/devices/index/');
+            //router.push('/devices/index/');
+            //window.location.href = route('devices/Index'); // Named route in Laravel
             toast.fire({ icon: "success", title: "Appareil bien modifié" });
         })
         .catch((error) => {
@@ -135,7 +128,9 @@ const updateDevice = (values, actions) => {
                     <div class="devices__create__main">
                         <div class="devices__create__main--addInfo card py-2 px-2 bg-white">
                             <p class="mb-1">Utilisateur</p>
-                            <input type="text" class="input" id="user_id" name="user_id" v-model="form.user_id">
+                            <select v-model="form.user_id" class="input" id="user_id" name="user_id">
+                                <option v-for="(name, id) in page.props.users" :key="id" :value="id">{{ name }}</option>
+                            </select>
                             <small style="color:red" v-if="errors.user_id">{{ errors.user_id }}</small>
                             <p class="mb-1">Marque</p>
                             <input type="text" class="input" id="brand" name="brand" v-model="form.brand">
@@ -178,7 +173,7 @@ const updateDevice = (values, actions) => {
                 <!-- Footer Bar -->
                 <div class="dflex justify-content-between align-items-center my-3">
                     <p></p>
-                    <button class="btn btn-secondary" @click="handleSave">Save</button>
+                    <button class="btn btn-secondary" @click="updateDevice">Save</button>
                 </div>
             </div>
         </template>

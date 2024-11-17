@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use App\Models\User;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -33,6 +34,11 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'auth' => [
                 'user' => $request->user(),
+            ],
+            'route' => [
+            'name' => \Route::currentRouteName(),
+            'params' => \Route::current() ? \Route::current()->parameters() : [],
+            'users' => User::all()->pluck('name', 'id'), // Ajoute les utilisateurs globalement
             ],
         ];
     }

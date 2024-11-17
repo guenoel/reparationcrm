@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Device;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Intervention\Image\Laravel\Facades\Image;
+use Inertia\Inertia;
+use Log;
 use function Pest\Laravel\get;
 
 class DeviceController extends Controller
@@ -30,21 +33,40 @@ class DeviceController extends Controller
                         ->orWhere('description', 'like', $searchTerm);
             });
             }
-            $devices = $devices->latest()->paginate(5);
+            $devices = $devices->with('user')->latest()->paginate(5);
 
             return response()->json([
                 'devices' => $devices
             ], 200);
         } catch (\Exception $e) {
-            \Log::error('Error fetching devices: ' . $e->getMessage());
+            Log::error('Error fetching devices: ' . $e->getMessage());
             return response()->json(['error' => 'An error occurred while fetching devices'], 500);
         }
     }
 
     public function create()
     {
-        return view('devices.create');
+        $users = User::getUsersForDropdown();
+        //$users = User::all()->pluck('name', 'id');
+        //Log::info('Users:', User::all()->toArray());
+        //return Inertia::render('Devices/Form', [
+        return response()->json([
+            'users' => $users,
+            'route' => 'device.create'
+        ]);
     }
+
+    // public function create()
+    // {
+    //     $users = User::all()->pluck('name', 'id'); // Récupère les noms et IDs
+
+    //     Log::info('Users:', User::all()->toArray());
+
+    //     return Inertia::render('devices/Form', [
+    //         'users' => $users,
+    //         'route' => 'devices.create'
+    //     ]);
+    // }
 
     public function store(Request $request)
     {
@@ -83,22 +105,39 @@ class DeviceController extends Controller
     public function edit($id)
     {
         $device = Device::find($id);
+        $users = User::getUsersForDropdown();
         return response()->json([
-            'device' => $device
+            'device' => $device,
+            'users' => $users,
+            'route' => 'devices.edit',
         ], 200);
     }
 
-    public function update(Request $request, Device $id)
+    // public function edit($id)
+    // {
+    //     $device = Device::findOrFail($id);
+    //     $users = User::all()->pluck('name', 'id'); // Récupère les utilisateurs pour la liste déroulante
+
+    //     return Inertia::render('devices/Form', [
+    //         'device' => $device,
+    //         'users' => $users,
+    //         'route' => 'devices.edit',
+    //     ]);
+    // }
+
+    public function update(Request $request, $id)
     {
         $request->validate([
-            'user_id'=> 'required',
-            'brand'=> 'required',
-            'model_name'=> 'required',
-            'description'=> 'required',
+            'user_id'=> 'required|exists:users,id',
+            'brand'=> 'required|string',
+            'model_name'=> 'required|string',
+            'description'=> 'required|string',
         ]);
 
-        $device = Device::find($id);
+        $device = Device::findOrFail($id);
 
+        $users = User::getUsersForDropdown();
+        Log::info("users: $users");
         $device->user_id = $request->user_id;
         if ($request->image != $device->image) {
             $strpos = strpos($request->image, ';');
@@ -124,6 +163,8 @@ class DeviceController extends Controller
         $device->imei = $request->imei;
         $device->description = $request->description;
         $device->save();
+
+        return response()->json(['message' => 'Device updated successfully']);
     }
 
     public function destroy($id)
@@ -132,7 +173,9 @@ class DeviceController extends Controller
         if ($device->image != "no-image.jpg") {
             $image_path = public_path() . "/upload/";
             $image = $image_path . $device->image;
-            if (file_exists($image)) {
+            // Vérifie si aucun autre device n'utilise la même image
+            $isImageUsedElsewhere = Device::where('image', $device->image)->where('id', '!=', $id)->exists();
+            if (!$isImageUsedElsewhere && file_exists($image)) {
                 @unlink($image);
             }
         }

@@ -4,7 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-
+//use App\Http\Controllers\DeviceController;
 //use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
@@ -39,6 +39,8 @@ Route::get('/devices/create', function () {
 Route::get('/devices/{id}/edit', function () {
     return Inertia::render('devices/Form');
 })->middleware(['auth', 'verified', 'admin'])->name('devices.edit');
+
+//Route::get('/devices/{id}/edit', [DeviceController::class, 'edit'])->middleware(['auth', 'verified', 'admin'])->name('devices.edit');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

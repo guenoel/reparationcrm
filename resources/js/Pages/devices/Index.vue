@@ -5,7 +5,15 @@ import axios from 'axios';
 import { ref, onMounted, watch } from 'vue';
 import { Inertia } from '@inertiajs/inertia';
 //import { useRoute, useRouter } from 'vue-router';
+
 //const router = useRouter()
+
+// defineProps({
+//     devices: {
+//         type: Array,
+//         required: true
+//     }
+// });
 
 let devices = ref([]);
 let links = ref([]);
@@ -120,7 +128,7 @@ const deleteDevice = (id) => {
                     <!-- device 1 -->
                     <div class="table--items devices__list__item" v-for="device in devices" :key="device.id">
                         <img :src="ourImage(device.image)" />
-                        <p>{{ device.user_id }}</p>
+                        <p>{{ device.user.name }}</p>
                         <p>{{ device.brand }}</p>
                         <p>{{ device.model_name }}</p>
                         <p>{{ device.description }}</p>
