@@ -16,6 +16,7 @@ Route::get('/', function () {
     ]);
 });
 
+//DASHBOARDS
 Route::get('/admin/dashboard', function () {
     return Inertia::render('Dashboard_Admin');
 })->middleware(['auth', 'verified', 'admin'])->name('dashboard_admin');
@@ -28,6 +29,7 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified', 'customer'])->name('dashboard');
 
+//DEVICES
 Route::get('/devices/index', function () {
     return Inertia::render('devices/Index');
 })->middleware(['auth', 'verified', 'admin'])->name('devices.index');
@@ -40,7 +42,18 @@ Route::get('/devices/{id}/edit', function () {
     return Inertia::render('devices/Form');
 })->middleware(['auth', 'verified', 'admin'])->name('devices.edit');
 
-//Route::get('/devices/{id}/edit', [DeviceController::class, 'edit'])->middleware(['auth', 'verified', 'admin'])->name('devices.edit');
+//SERVICES
+Route::get('/services/index', function () {
+    return Inertia::render('services/Index');
+})->middleware(['auth', 'verified', 'admin'])->name('services.index');
+
+Route::get('/services/create', function () {
+    return Inertia::render('services/Form');
+})->middleware(['auth', 'verified', 'admin'])->name('services.create');
+
+Route::get('/services/{id}/edit', function () {
+    return Inertia::render('services/Form');
+})->middleware(['auth', 'verified', 'admin'])->name('services.edit');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

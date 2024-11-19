@@ -14,4 +14,14 @@ class Device extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function services()
+    {
+        return $this->hasMany(Service::class);
+    }
+
+    public static function getDevicesForDropdown()
+    {
+        return self::pluck('id', 'id');
+    }
 }

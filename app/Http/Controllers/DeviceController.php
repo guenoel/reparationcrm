@@ -36,7 +36,7 @@ class DeviceController extends Controller
                         ->orWhere('description', 'like', $searchTerm);
             });
             }
-            $devices = $devices->with('user')->latest()->paginate(5);
+            $devices = $devices->whereHas('user')->with('user')->latest()->paginate(5);
 
             return response()->json([
                 'devices' => $devices

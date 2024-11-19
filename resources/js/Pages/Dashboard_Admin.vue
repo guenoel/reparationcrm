@@ -24,6 +24,11 @@ import { Head, Link } from '@inertiajs/vue3';
                                 Appareils en réparation
                             </Link>
                         </div>
+                        <div class="p-6 text-gray-900">
+                            <Link href="/services/index" class="btn btn-secondary my-1">
+                                Prestations
+                            </Link>
+                        </div>
                     </div>
                 </div>
             </div>

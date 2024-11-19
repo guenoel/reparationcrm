@@ -38,7 +38,7 @@ class HandleInertiaRequests extends Middleware
             'route' => [
             'name' => \Route::currentRouteName(),
             'params' => \Route::current() ? \Route::current()->parameters() : [],
-            'users' => User::all()->pluck('name', 'id'), // Ajoute les utilisateurs globalement
+            //'users' => User::all()->pluck('name', 'id'), // Ajoute les utilisateurs globalement
             ],
         ];
     }

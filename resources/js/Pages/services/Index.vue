@@ -9,40 +9,37 @@ import { Inertia } from '@inertiajs/inertia';
 //const router = useRouter()
 
 // defineProps({
-//     devices: {
+//     services: {
 //         type: Array,
 //         required: true
 //     }
 // });
 
-let devices = ref([]);
+let services = ref([]);
 let links = ref([]);
 let searchQuery = ref('');
 
 onMounted(async () => {
-    getDevices();
+    getServices();
 });
 
 watch(searchQuery, () => {
-    getDevices();
+    getServices();
 });
 
-//const newDevice = () => {
-//    //router.push('/devices/create')
-//    Inertia.visit('/devices/create')
+//const newService = () => {
+//    //router.push('/services/create')
+//    Inertia.visit('/services/create')
 //}
 
-const ourImage = (img) => {
-    return "/upload/" + img;
-};
 
-const getDevices = async () => {
+const getServices = async () => {
     try {
-        const response = await axios.get('/api/devices?&searchQuery=' + searchQuery.value);
-        devices.value = response.data.devices.data;
-        links.value = response.data.devices.links;
+        const response = await axios.get('/api/services?&searchQuery=' + searchQuery.value);
+        services.value = response.data.services.data;
+        links.value = response.data.services.links;
     } catch (error) {
-        console.error("Error fetching devices:", error);
+        console.error("Error fetching services:", error);
     }
 };
 
@@ -53,17 +50,17 @@ const changePage = (link) => {
 
     axios.get(link.url)
         .then((response) => {
-            devices.value = response.data.devices.data;
-            links.value = response.data.devices.links;
+            services.value = response.data.services.data;
+            links.value = response.data.services.links;
         });
 };
 
 const onEdit = (id) => {
-    //router.push(`/devices/${id}/edit`)
-    Inertia.visit(`/devices/${id}/edit`);
+    //router.push(`/services/${id}/edit`)
+    Inertia.visit(`/services/${id}/edit`);
 };
 
-const deleteDevice = (id) => {
+const deleteService = (id) => {
     Swal.fire({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
@@ -74,14 +71,14 @@ const deleteDevice = (id) => {
         confirmButtonText: "Yes, delete it!"
     }).then((result) => {
         if (result.isConfirmed) {
-            axios.delete(`/api/devices/${id}`)
+            axios.delete(`/api/services/${id}`)
                 .then(() => {
                     Swal.fire({
                         title: "Deleted!",
                         text: "Your file has been deleted.",
                         icon: "success"
                     });
-                    getDevices();
+                    getServices();
                 });
         }
     });
@@ -89,12 +86,12 @@ const deleteDevice = (id) => {
 </script>
 
 <template>
-    <Head title="Enregistrement Appareil" />
+    <Head title="Enregistrement prestation" />
 
     <AuthenticatedLayout>
         <template #header>
             <h2 class="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-                <span>Appareils</span>
+                <span>Prestations</span>
             </h2>
         </template>
         <template #default>
@@ -102,41 +99,45 @@ const deleteDevice = (id) => {
                 <div class="devices__list table">
                     <div class="customers__titlebar dflex justify-content-between align-items-center">
                         <div class="customers__titlebar--item">
-                            <h1>Appareils</h1>
+                            <h1>Prestations</h1>
                         </div>
                         <div class="customers__titlebar--item">
-                            <Link href="/devices/create" class="btn btn-secondary my-1">
-                            Ajouter un appareil
+                            <Link href="/services/create" class="btn btn-secondary my-1">
+                            Ajouter une prestation
                             </Link>
                             <!-- <button @click="newDevice">Ajouter un appareil</button> -->
                         </div>
                     </div>
                     <div class="relative">
-                        <input class="search-input" type="text" name="search" placeholder="Recherche d'appareil..."
+                        <input class="search-input" type="text" name="search" placeholder="Recherche prestation..."
                             v-model="searchQuery" />
                     </div>
 
-                    <div class="table--heading mt-2 devices__list__heading " style="padding-top: 20px;background:#FFF">
-                        <p class="table--heading--col1">Image</p>
-                        <p class="table--heading--col2">Client</p>
+                    <div class="table--heading mt-2 services__list__heading " style="padding-top: 20px;background:#FFF">
+                        <p class="table--heading--col1">Utilisateur</p>
+                        <p class="table--heading--col2">Id appareil</p>
                         <p class="table--heading--col3">Marque</p>
-                        <p class="table--heading--col4">Modèle</p>
-                        <p class="table--heading--col5">Description de l'appareil</p>
-                        <p class="table--heading--col6">actions</p>
+                        <p class="table--heading--col4">Nom Modèle</p>
+                        <p class="table--heading--col5">No Modèle</p>
+                        <p class="table--heading--col6">Description de la prestation</p>
+                        <p class="table--heading--col7">Price</p>
+                        <p class="table--heading--col8">Actions</p>
                     </div>
 
                     <!-- device 1 -->
-                    <div class="table--items devices__list__item" v-for="device in devices" :key="device.id">
-                        <img :src="ourImage(device.image)" />
-                        <p>{{ device.user.name }}</p>
-                        <p>{{ device.brand }}</p>
-                        <p>{{ device.model_name }}</p>
-                        <p>{{ device.description }}</p>
+                    <div class="table--items services__list__item" v-for="service in services" :key="service.id">
+                        <p>{{ service.device.user.name }}</p>
+                        <p>{{ service.device_id }}</p>
+                        <p>{{ service.device.brand }}</p>
+                        <p>{{ service.device.model_name }}</p>
+                        <p>{{ service.device.model_number }}</p>
+                        <p>{{ service.description }}</p>
+                        <p>{{ service.price }}</p>
                         <div>
-                            <button class="btn-icon btn-icon-success" @click="onEdit(device.id)">
+                            <button class="btn-icon btn-icon-success" @click="onEdit(service.id)">
                                 <i class="fas fa-pencil-alt"></i>
                             </button>
-                            <button class="btn-icon btn-icon-danger" @click="deleteDevice(device.id)">
+                            <button class="btn-icon btn-icon-danger" @click="deleteService(service.id)">
                                 <i class="far fa-trash-alt"></i>
                             </button>
                         </div>
