@@ -1,4 +1,4 @@
-name: Laravel
+name: Laravel Tests
 
 on:
   push:
@@ -64,6 +64,9 @@ jobs:
         sed -i 's/DB_USERNAME=.*/DB_USERNAME=laravel_user/' .env
         sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=password/' .env
 
+    - name: Generate Application Key
+      run: php artisan key:generate
+
     - name: Run Migrations
       run: php artisan migrate --force
 
@@ -76,4 +79,3 @@ jobs:
         DB_USERNAME: laravel_user
         DB_PASSWORD: password
       run: php artisan test
-
