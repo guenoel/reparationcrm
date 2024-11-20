@@ -41,6 +41,17 @@ jobs:
     - name: Install Composer Dependencies
       run: composer install --prefer-dist --no-progress --no-suggest
 
+    - name: Install Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '22' # Compatible avec Vue.js et les outils modernes
+
+    - name: Install NPM Dependencies
+      run: npm install
+
+    - name: Build Vue.js Application
+      run: npm run build
+
     - name: Copy Environment File
       run: cp .env.example .env
 
