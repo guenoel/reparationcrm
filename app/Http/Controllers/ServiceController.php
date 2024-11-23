@@ -32,7 +32,7 @@ class ServiceController extends Controller
                     $deviceQuery->where('serial_number', 'like', $searchTerm) // Search by serial number
                                 ->orWhere('imei', 'like', $searchTerm);
                 })
-                        ->orwhere('description', 'like', $searchTerm)
+                        ->orWhere('description', 'like', $searchTerm)
                         ->orWhere('price', 'like', $searchTerm);
             });
             }

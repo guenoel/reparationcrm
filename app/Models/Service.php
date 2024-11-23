@@ -14,4 +14,16 @@ class Service extends Model
     {
         return $this->belongsTo(Device::class);
     }
+    public function tasks()
+    {
+        return $this->hasMany(Service::class);
+    }
+    public function spares()
+    {
+        return $this->hasMany(Service::class);
+    }
+    public static function getServicesForDropdown()
+    {
+        return self::pluck('id', 'id');
+    }
 }

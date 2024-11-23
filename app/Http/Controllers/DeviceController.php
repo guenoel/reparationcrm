@@ -28,15 +28,12 @@ class DeviceController extends Controller
             
             // Adding multiple fields for search
             $devices = $devices->where(function ($query) use ($searchTerm) {
-                $query  ->WhereHas('user', function ($userQuery) use ($searchTerm) {
-                    $userQuery->where('name', 'like', $searchTerm); // Recherche sur le nom de l'utilisateur
-                })
-                        ->orwhere('brand', 'like', $searchTerm)
+                $query->where('brand', 'like', $searchTerm)
                         ->orWhere('model_name', 'like', $searchTerm)
                         ->orWhere('description', 'like', $searchTerm);
             });
             }
-            $devices = $devices->whereHas('user')->with('user')->latest()->paginate(5);
+            $devices = $devices->with('user')->latest()->paginate(5);
 
             return response()->json([
                 'devices' => $devices

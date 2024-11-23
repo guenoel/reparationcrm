@@ -37,7 +37,43 @@ const showingNavigationDropdown = ref(false);
                                     :href="route('dashboard_admin')"
                                     :active="route().current('dashboard_admin')"
                                 >
-                                    Dashboard Header
+                                    Dashboard
+                                </NavLink>
+                                <NavLink
+                                    :href="route('devices.index')"
+                                    :active="route().current('devices.index')"
+                                >
+                                    Appareils en réparation
+                                </NavLink>
+                                <NavLink
+                                    :href="route('services.index')"
+                                    :active="route().current('services.index')"
+                                >
+                                    Prestations
+                                </NavLink>
+                                <NavLink
+                                    :href="route('tasks.index')"
+                                    :active="route().current('tasks.index')"
+                                >
+                                    Tâches réalisées
+                                </NavLink>
+                                <NavLink
+                                    :href="route('spares.index')"
+                                    :active="route().current('spares.index')"
+                                >
+                                    Pièces
+                                </NavLink>
+                                <NavLink
+                                    :href="route('spare_types.index')"
+                                    :active="route().current('spare_types.index')"
+                                >
+                                    Types de Pièces
+                                </NavLink>
+                                <NavLink
+                                    :href="route('users.index')"
+                                    :active="route().current('users.index')"
+                                >
+                                    Droits d'accès
                                 </NavLink>
                             </div>
                         </div>

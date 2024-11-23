@@ -22,6 +22,13 @@ class Device extends Model
 
     public static function getDevicesForDropdown()
     {
-        return self::pluck('id', 'id');
+        return self::select('devices.id', 'devices.user_id', 'devices.brand', 'devices.model_name', 'users.name', 'devices.serial_number')
+            ->join('users', 'users.id', '=', 'devices.user_id') // Join with users table
+            ->get()
+            ->mapWithKeys(function ($device) {
+                return [
+                    $device->id => $device->name . ' / ' . $device->brand . ' / ' . $device->model_name . ' / ' . $device->serial_number, // Use user name
+                ];
+            });
     }
 }

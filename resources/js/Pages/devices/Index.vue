@@ -32,7 +32,7 @@ watch(searchQuery, () => {
 //    Inertia.visit('/devices/create')
 //}
 
-const ourImage = (img) => {
+const ourDeviceImage = (img) => {
     return "/upload/" + img;
 };
 
@@ -127,7 +127,7 @@ const deleteDevice = (id) => {
 
                     <!-- device 1 -->
                     <div class="table--items devices__list__item" v-for="device in devices" :key="device.id">
-                        <img :src="ourImage(device.image)" />
+                        <img :src="ourDeviceImage(device.image)" />
                         <p>{{ device.user.name }}</p>
                         <p>{{ device.brand }}</p>
                         <p>{{ device.model_name }}</p>

@@ -11,14 +11,14 @@ import toast from 'sweetalert2';
 const deviceId = ref();
 
 const form = reactive({
+    image: '',
     user_id: '',
     brand: '',
     model_name: '',
     model_number: '',
     serial_number: '',
     imei: '',
-    description: '',
-    image: ''
+    description: ''
 });
 
 //const router = useRouter()
@@ -55,6 +55,7 @@ const getDevice = async () => {
         let response = await axios.get(`/api/devices/${deviceId.value}/edit`)
             //.then((response) => {
             if (response.data.device) {
+                form.image = response.data.device.image;
                 form.user_id = response.data.device.user_id;
                 form.brand = response.data.device.brand;
                 form.model_name = response.data.device.model_name;
@@ -62,7 +63,6 @@ const getDevice = async () => {
                 form.serial_number = response.data.device.serial_number;
                 form.imei = response.data.device.imei;
                 form.description = response.data.device.description;
-                form.image = response.data.device.image;
             //});
             }
             if (response.data.users) {

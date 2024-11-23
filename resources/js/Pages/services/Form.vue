@@ -12,7 +12,7 @@ const serviceId = ref();
 
 const form = reactive({
     device_id: '',
-    Description: '',
+    description: '',
     price: '',
 });
 

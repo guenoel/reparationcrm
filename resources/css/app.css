@@ -89,13 +89,13 @@ main h1 ~ p {
 }
 
 .devices__list__heading {
-    -ms-grid-columns: 80px 1fr 1fr 1fr 1fr 80px;
-    grid-template-columns: 80px 1fr 1fr 1fr 1fr 80px;
+    -ms-grid-columns: 1fr 1fr 1fr 1fr 1fr 80px;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 80px;
 }
 
 .services__list__heading {
-    -ms-grid-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    -ms-grid-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 80px;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 80px;
 }
 
 .table--items {
@@ -118,16 +118,16 @@ main h1 ~ p {
     border-bottom: 1px solid #e0e0e0;
     /* -ms-grid-columns: 80px 1fr 1fr 1fr 1fr 80px;
     grid-template-columns: 80px 1fr 1fr 1fr 1fr 80px; */
-    -ms-grid-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+    -ms-grid-columns: 1fr 1fr 1fr 1fr 1fr 80px;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 80px;
 }
 
 .services__list__item {
     border-bottom: 1px solid #e0e0e0;
     /* -ms-grid-columns: 80px 1fr 1fr 1fr 1fr 80px;
     grid-template-columns: 80px 1fr 1fr 1fr 1fr 80px; */
-    -ms-grid-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    -ms-grid-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 80px;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 80px;
 }
 
 .devices__list__bottom {
