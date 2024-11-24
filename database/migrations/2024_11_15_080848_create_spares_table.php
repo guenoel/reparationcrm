@@ -17,7 +17,7 @@ return new class extends Migration
         Schema::create('spare_types', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string("image");
+            $table->string("image")->default('no-image.jpg');
             $table->string('dealer');
             $table->string('type');
             $table->string('brand');
@@ -29,7 +29,7 @@ return new class extends Migration
         Schema::create('spares', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string("image");
+            $table->string("image")->default('no-image.jpg');
             $table->foreignIdFor(Service::class)->constrained()->onDelete('cascade');
             $table->foreignIdFor(SpareType::class)->constrained()->onDelete('cascade');
             $table->text('description');

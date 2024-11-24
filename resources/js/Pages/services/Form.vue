@@ -40,6 +40,8 @@ const getDevices = async () => {
     try {
         let response = await axios.get('/api/services/create');
         page.props.devices = response.data.devices;
+        const params = new URLSearchParams(window.location.search);
+        form.device_id = params.get('device_id'); // Preselect the device ID
     } catch (error) {
         console.error("Error fetching devices:", error);
     }

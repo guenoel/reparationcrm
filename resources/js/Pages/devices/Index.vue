@@ -46,6 +46,11 @@ const getDevices = async () => {
     }
 };
 
+const redirectToServiceForm = (deviceId) => {
+  // Redirect to the services form with the device_id as a query parameter
+  Inertia.visit(`/services/create?device_id=${deviceId}`);
+};
+
 const changePage = (link) => {
     if (!link.url || link.active) {
         return;
@@ -139,6 +144,11 @@ const deleteDevice = (id) => {
                             <button class="btn-icon btn-icon-danger" @click="deleteDevice(device.id)">
                                 <i class="far fa-trash-alt"></i>
                             </button>
+                        </div>
+                        <div>
+                            <Link href="/services/create" class="btn btn-secondary my-1" @click="redirectToServiceForm(device.id)">
+                            Ajouter une prestation
+                            </Link>
                         </div>
                     </div>
                     <div class="table--items devices__list__bottom">

@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -28,19 +29,27 @@ class AuthenticatedSessionController extends Controller
      * Handle an incoming authentication request.
      */
     public function store(LoginRequest $request): RedirectResponse
-    {
-        $request->authenticate();
+{
+    $request->authenticate();
 
-        $request->session()->regenerate();
+    $request->session()->regenerate();
 
-        if($request->user()->role === '2')
-        {
-            return redirect('/admin/dashboard');
-        } else if ($request->user()->role === '1'){
-            return redirect('/worker/dashboard');
-        }
-        return redirect()->intended(route('dashboard', absolute: false));
-    }
+    $role = $request->user()->role;
+
+    Log::info("AuthenticatedSessionController role user: $role");
+    Log::info("Assertion role user 1: " . ($role == '1'));
+
+    $redirectRoute = match ($role) {
+        2 => 'dashboard_admin',  // Named route for admin
+        1 => 'dashboard_worker', // Named route for worker
+        0 => 'dashboard',        // Named route for customer
+        default => Log::info("Default case executed for role: $role") && 'welcome',      // Fallback named route
+    };
+
+    Log::info("Redirecting to route: $redirectRoute");
+
+    return redirect()->route($redirectRoute);
+}
 
     /**
      * Destroy an authenticated session.

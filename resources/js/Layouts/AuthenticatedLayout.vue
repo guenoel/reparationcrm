@@ -6,8 +6,11 @@ import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link } from '@inertiajs/vue3';
+import { usePage } from '@inertiajs/vue3';
 
+const page = usePage();
 const showingNavigationDropdown = ref(false);
+const userRole = page.props.auth.user.role; // Récupère le rôle de l'utilisateur
 </script>
 
 <template>
@@ -34,42 +37,63 @@ const showingNavigationDropdown = ref(false);
                                 class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex"
                             >
                                 <NavLink
-                                    :href="route('dashboard_admin')"
-                                    :active="route().current('dashboard_admin')"
+                                    v-if="userRole == 0"
+                                    :href="route('dashboard')"
+                                    :active="route().current('dashboard')"
                                 >
                                     Dashboard
                                 </NavLink>
                                 <NavLink
+                                    v-if="userRole == 1"
+                                    :href="route('dashboard_worker')"
+                                    :active="route().current('dashboard_worker')"
+                                >
+                                    Dashboard Employé
+                                </NavLink>
+                                <NavLink
+                                    v-if="userRole == 2"
+                                    :href="route('dashboard_admin')"
+                                    :active="route().current('dashboard_admin')"
+                                >
+                                    Dashboard Admin
+                                </NavLink>
+                                <NavLink
+                                    v-if="userRole >= 0"
                                     :href="route('devices.index')"
                                     :active="route().current('devices.index')"
                                 >
                                     Appareils en réparation
                                 </NavLink>
                                 <NavLink
+                                    v-if="userRole >= 0"
                                     :href="route('services.index')"
                                     :active="route().current('services.index')"
                                 >
                                     Prestations
                                 </NavLink>
                                 <NavLink
+                                    v-if="userRole >= 1"
                                     :href="route('tasks.index')"
                                     :active="route().current('tasks.index')"
                                 >
                                     Tâches réalisées
                                 </NavLink>
                                 <NavLink
+                                    v-if="userRole >= 1"
                                     :href="route('spares.index')"
                                     :active="route().current('spares.index')"
                                 >
                                     Pièces
                                 </NavLink>
                                 <NavLink
+                                    v-if="userRole >= 2"
                                     :href="route('spare_types.index')"
                                     :active="route().current('spare_types.index')"
                                 >
                                     Types de Pièces
                                 </NavLink>
                                 <NavLink
+                                    v-if="userRole >= 2"
                                     :href="route('users.index')"
                                     :active="route().current('users.index')"
                                 >

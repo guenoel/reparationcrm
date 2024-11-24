@@ -7,6 +7,7 @@ use Illuminate\Foundation\Configuration\Middleware;
 use App\Http\Middleware\Admin;
 use App\Http\Middleware\Customer;
 use App\Http\Middleware\Worker;
+use App\Http\Middleware\RoleBasedAccessControl;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -22,9 +23,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->alias([
-            'admin' => Admin::class,
-            'customer' => Customer::class,
-            'worker' => Worker::class,
+            'role-based-access-control' => RoleBasedAccessControl::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

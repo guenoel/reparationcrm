@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->foreignIdFor(User::class)->constrained()->onDelete('cascade');
-            $table->string("image");
+            $table->string("image")->default('no-image.jpg');
             $table->string("brand");
             $table->string("model_name");
             $table->string("model_number");
