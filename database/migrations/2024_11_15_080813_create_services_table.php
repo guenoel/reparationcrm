@@ -16,8 +16,8 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->foreignIdFor(Device::class)->constrained()->onDelete('cascade');
-            $table->text("description");
-            $table->decimal('price', 10, 2)->nullable(false)->change();
+            $table->text('description');
+            $table->decimal('price', 10, 2)->nullable()->default(null);
             $table->boolean('accepted')->default(false);
         });
     }
