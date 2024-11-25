@@ -2,13 +2,15 @@
 
 namespace App\Models;
 
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Sanctum\HasApiTokens;
 
-class Service extends Model
+class Service extends Authenticatable
 {
-    use HasFactory;
-    protected $fillable = ['device_id', 'description', 'price', 'created_at', 'updated_at'];
+    use HasFactory, HasApiTokens;
+    protected $fillable = ['device_id', 'description', 'price', 'accepted', 'created_at', 'updated_at'];
 
     public function device()
     {

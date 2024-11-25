@@ -36,17 +36,12 @@ class AuthenticatedSessionController extends Controller
 
     $role = $request->user()->role;
 
-    Log::info("AuthenticatedSessionController role user: $role");
-    Log::info("Assertion role user 1: " . ($role == '1'));
-
     $redirectRoute = match ($role) {
         2 => 'dashboard_admin',  // Named route for admin
         1 => 'dashboard_worker', // Named route for worker
         0 => 'dashboard',        // Named route for customer
-        default => Log::info("Default case executed for role: $role") && 'welcome',      // Fallback named route
+        default => 'welcome',      // Fallback named route
     };
-
-    Log::info("Redirecting to route: $redirectRoute");
 
     return redirect()->route($redirectRoute);
 }

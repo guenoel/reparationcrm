@@ -1,12 +1,8 @@
 <?php
-
+use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-
-use App\Http\Middleware\Admin;
-use App\Http\Middleware\Customer;
-use App\Http\Middleware\Worker;
 use App\Http\Middleware\RoleBasedAccessControl;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -20,6 +16,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             \App\Http\Middleware\HandleInertiaRequests::class,
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
+        ]);
+
+        // Sanctum middleware for APIs
+        $middleware->api(prepend: [
+            EnsureFrontendRequestsAreStateful::class,
         ]);
 
         $middleware->alias([

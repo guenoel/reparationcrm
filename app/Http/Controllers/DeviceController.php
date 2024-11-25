@@ -9,6 +9,7 @@ use Intervention\Image\Laravel\Facades\Image;
 use Inertia\Inertia;
 use Log;
 use function Pest\Laravel\get;
+use Illuminate\Support\Facades\Auth;
 
 class DeviceController extends Controller
 {
@@ -23,12 +24,22 @@ class DeviceController extends Controller
     {
         try {
             $devices = Device::query();
+
+            $user_role = Auth::user()->role;
+            $userId = Auth::id();
+
+            if ($user_role === 0) {
+                // Restrict devices to the logged-in user's own devices if they are a customer
+                $devices->where('user_id', $userId);
+            }
             if($request->searchQuery != ''){
                 $searchTerm = "%{$request->searchQuery}%";
-            
-            // Adding multiple fields for search
             $devices = $devices->where(function ($query) use ($searchTerm) {
-                $query->where('brand', 'like', $searchTerm)
+                $query->whereHas('user', function ($userQuery) use ($searchTerm) {
+                    $userQuery->where('name', 'like', $searchTerm) // Search by name
+                                ->orWhere('phone', 'like', $searchTerm);
+                })
+                        ->orWhere('brand', 'like', $searchTerm)
                         ->orWhere('model_name', 'like', $searchTerm)
                         ->orWhere('description', 'like', $searchTerm);
             });
@@ -137,7 +148,6 @@ class DeviceController extends Controller
         $device = Device::findOrFail($id);
 
         $users = User::getUsersForDropdown();
-        Log::info("users: $users");
         $device->user_id = $request->user_id;
         if ($request->image != $device->image) {
             $strpos = strpos($request->image, ';');
@@ -147,14 +157,11 @@ class DeviceController extends Controller
             // Resize and save the image using Intervention
             $img = Image::read($request->image)->resize(200, 200);
             $uploadPath = public_path() . "/upload/";
-            $image = $upload_path = public_path() . "/upload/";
-            if (file_exists($image)) {
-                @unlink($image);
+            if (file_exists($uploadPath)) {
+                @unlink($uploadPath);
             }
-            $img->save($uploadPath . $name);
+            $img->save("$uploadPath$name");
             $device->image = $name;
-        } else {
-            $device->image = $device->image;
         }
         $device->brand = $request->brand;
         $device->model_name = $request->model_name;

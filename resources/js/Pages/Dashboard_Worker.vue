@@ -12,7 +12,7 @@ import { Head, Link } from '@inertiajs/vue3';
             <h2
                 class="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200"
             >
-                Dashboard Worker
+                Dashboard Employé
             </h2>
         </template>
         <template #default>
@@ -20,9 +20,7 @@ import { Head, Link } from '@inertiajs/vue3';
                 <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                     <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                         <div class="p-6 text-gray-900">
-                            <Link href="/devices/index" class="btn btn-secondary my-1">
-                                Appareils en réparation
-                            </Link>
+                            <h1>Prochainement:<br> graphiques pour l'employé</h1>
                         </div>
                     </div>
                 </div>

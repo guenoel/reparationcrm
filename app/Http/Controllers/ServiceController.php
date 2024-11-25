@@ -73,18 +73,40 @@ class ServiceController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'device_id'=> 'required',
-            'description'=> 'required',
-            'price'=> 'required',
-        ]);
+        try {
+            $validatedData = $request->validate([
+                'device_id' => 'required|exists:devices,id',
+                'description' => 'required|string',
+                'price' => 'nullable|numeric',
+                'accepted' => 'nullable|boolean',
+            ]);
+        
+            $service = new Service();
+            $service->device_id = $validatedData['device_id'];
+            $service->description = $validatedData['description'];
+            $service->price = $validatedData['price'] ?? null;
+            $service->accepted = $validatedData['accepted'] ?? false;
+            $service->save();
+        
+            return response()->json(['message' => 'Service created successfully'], 201);
+        } catch (\Exception $e) {
+            Log::error('Error creating service:', ['error' => $e->getMessage()]);
+            return response()->json(['error' => 'An error occurred while creating the service'], 500);
+        }
+        // $request->validate([
+        //     'device_id'=> 'required',
+        //     'description'=> 'required',
+        //     'price'=> 'nullable|numeric',
+        //     'accepted'=> 'required|boolean',
+        // ]);
 
-        $service = new Service();
+        // $service = new Service();
 
-        $service->device_id = $request->device_id;
-        $service->description = $request->description;
-        $service->price = $request->price;
-        $service->save();
+        // $service->device_id = $request->device_id;
+        // $service->description = $request->description;
+        // $service->price = $request->price;
+        // $service->accepted = $request->accepted ?? false;
+        // $service->save();
     }
 
     public function edit($id)
@@ -115,7 +137,8 @@ class ServiceController extends Controller
         $request->validate([
             'device_id'=> 'required|exists:devices,id',
             'description'=> 'required|string',
-            'price'=> 'required',
+            'price'=> 'nullable|numeric',
+            'accepted'=> 'required|boolean',
         ]);
 
         $service = Service::findOrFail($id);
@@ -125,6 +148,7 @@ class ServiceController extends Controller
         $service->device_id = $request->device_id;
         $service->description = $request->description;
         $service->price = $request->price;
+        $service->accepted = $request->accepted;
         $service->save();
 
         return response()->json(['message' => 'Service updated successfully']);

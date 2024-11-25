@@ -29,8 +29,15 @@ const form = reactive({
 const page = usePage();
 const editMode = ref(false);
 let errors = ref([]);
+const hideUserDropdown = ref(false); // To control dropdown visibility
 
 onMounted(() => {
+    // Check user role and set dropdown visibility
+    const authUser = page.props.auth.user;
+    if (authUser && authUser.role === 0) {
+        hideUserDropdown.value = true;
+        form.user_id = authUser.id; // Pre-fill authenticated user's ID
+    }
     // Check if there's a device ID to determine edit mode
     if (page.props.route && page.props.route.name === 'devices.edit') {
         editMode.value = true;
@@ -165,11 +172,13 @@ const updateDevice = (values, actions) => {
                 <div class="devices__create__cardWrapper mt-2">
                     <div class="devices__create__main">
                         <div class="devices__create__main--addInfo card py-2 px-2 bg-white">
-                            <p class="mb-1">Utilisateur</p>
-                            <select v-model="form.user_id" class="input" id="user_id" name="user_id">
-                                <option v-for="(name, id) in page.props.users" :key="id" :value="id">{{ name }}</option>
-                            </select>
-                            <small style="color:red" v-if="errors.user_id">{{ errors.user_id }}</small>
+                            <div v-if="!hideUserDropdown">
+                                <p class="mb-1">Utilisateur</p>
+                                <select v-model="form.user_id" class="input" id="user_id" name="user_id">
+                                    <option v-for="(name, id) in page.props.users" :key="id" :value="id">{{ name }}</option>
+                                </select>
+                                <small style="color:red" v-if="errors.user_id">{{ errors.user_id }}</small>
+                            </div>
                             <p class="mb-1">Marque</p>
                             <input type="text" class="input" id="brand" name="brand" v-model="form.brand">
                             <small style="color:red" v-if="errors.brand">{{ errors.brand }}</small>

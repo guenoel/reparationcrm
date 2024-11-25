@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Sanctum\HasApiTokens;
 
-class Spare extends Model
+class Spare extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory, HasApiTokens;
     protected $fillable = ['image', 'service_id', 'sparetype_id', 'description', 'date_purchase', 'date_reception', 'date_return', 'created_at', 'updated_at'];
 
     public function service()

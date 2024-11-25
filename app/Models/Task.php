@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Sanctum\HasApiTokens;
 
-class Task extends Model
+class Task extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory, HasApiTokens;
     protected $fillable = ['image', 'service_id', 'user_id', 'start', 'stop', 'description', 'created_at', 'updated_at'];
     public function user()
     {

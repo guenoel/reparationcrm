@@ -13,7 +13,8 @@ const serviceId = ref();
 const form = reactive({
     device_id: '',
     description: '',
-    price: '',
+    price: null,
+    accepted: false
 });
 
 //const router = useRouter()
@@ -24,8 +25,14 @@ const form = reactive({
 const page = usePage();
 const editMode = ref(false);
 let errors = ref([]);
+const hideUserDropdown = ref(false); // To control dropdown visibility
 
 onMounted(() => {
+    // Check user role and set dropdown visibility
+    const authUser = page.props.auth.user;
+    if (authUser && authUser.role === 0) {
+        hideUserDropdown.value = true;
+    }
     // Check if there's a service ID to determine edit mode
     if (page.props.route && page.props.route.name === 'services.edit') {
         editMode.value = true;
@@ -55,12 +62,12 @@ const getService = async () => {
                 form.device_id = response.data.service.device_id;
                 form.description = response.data.service.description;
                 form.price = response.data.service.price;
+                form.accepted = response.data.service.accepted;
             //});
             }
             if (response.data.devices) {
             page.props.devices = response.data.devices; // Chargez les utilisateurs si nécessaire
             }
-            
     } catch (error) {
         console.error("Error fetching service data:", error);
     }
@@ -89,6 +96,7 @@ const createService = (values, actions) => {
                 console.error("Error creating service:", error);
             }
         });
+        console.log('Form data being sent:', JSON.stringify(form, null, 2));
 };
 
 const updateService = (values, actions) => {
@@ -135,12 +143,28 @@ const updateService = (values, actions) => {
                                 <option v-for="(name, id) in page.props.devices" :key="id" :value="id">{{ name }}</option>
                             </select>
                             <small style="color:red" v-if="errors.device_id">{{ errors.device_id }}</small>
-                            <p class="my-1">Description</p>
+                            <p class="my-1">Description du service demandé</p>
                             <textarea cols="10" rows="5" class="textarea" id="description" name="description" v-model="form.description"></textarea>
                             <small style="color:red" v-if="errors.description">{{ errors.description }}</small>
-                            <p class="mb-1">Prix</p>
-                            <input type="text" class="input" id="price" name="price" v-model="form.price">
-                            <small style="color:red" v-if="errors.price">{{ errors.price }}</small>
+                            <div v-if="!hideUserDropdown">
+                                <p class="mb-1">Prix</p>
+                                <input type="text" class="input" id="price" name="price" v-model="form.price">
+                                <small style="color:red" v-if="errors.price">{{ errors.price }}</small>
+                            </div>
+                            <div v-if="hideUserDropdown && editMode && form.price != null">
+                                <p class="my-1">Tarif: {{ form.price }}</p>
+                            </div>
+                            <div v-if="editMode && form.price == null">
+                                <p class="mb-1">En attente d'un tarif</p>
+                            </div>
+                            <div v-if="hideUserDropdown && editMode && form.accepted == false && form.price != null">
+                                <p class="mb-1">
+                                <input type="checkbox" id="accepted" name="accepted" v-model="form.accepted">
+                                Cochez la case pour accepter le devis</p>
+                            </div>
+                            <div v-if="hideUserDropdown && editMode && form.accepted == true">
+                                <p class="my-1">Devis accepté</p>
+                            </div>
                         </div>
                     </div>
                 </div>
