@@ -25,8 +25,6 @@ const form = useForm({
 const submit = () => {
     form.post(route('login'), {
         onSuccess: (response) => {
-            console.log('Response from login:', response.props);
-
             // Stocker le token dans localStorage
             if (response.props.token) {
                 localStorage.setItem('Authorization', `Bearer ${response.props.token}`);
