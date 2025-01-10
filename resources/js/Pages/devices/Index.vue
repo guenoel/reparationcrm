@@ -48,7 +48,7 @@ const getDevices = async () => {
 
 const redirectToServiceForm = (deviceId) => {
   // Redirect to the services form with the device_id as a query parameter
-  Inertia.visit(`/services/create?device_id=${deviceId}`);
+    Inertia.visit(`/services/create?device_id=${deviceId}`);
 };
 
 const changePage = (link) => {

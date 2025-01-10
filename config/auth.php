@@ -40,18 +40,19 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        // Added by myself
+        // 'api' => [
+        //     'driver' => 'token',
+        //     'provider' => 'users',
+        //     'hash' => false,
+        // ],
+        'sanctum' => [
+            'driver' => 'sanctum',
+            'provider' => 'users',
+        ],
     ],
 
-    // Added by myself
-    'api' => [
-        'driver' => 'token',
-        'provider' => 'users',
-        'hash' => false,
-    ],
-    'sanctum' => [
-        'driver' => 'sanctum',
-        'provider' => 'users',
-    ],
+    
 
     /*
     |--------------------------------------------------------------------------

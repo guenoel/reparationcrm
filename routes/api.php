@@ -10,14 +10,14 @@ use App\Http\Controllers\TaskController;
 use App\Http\Controllers\SparetypeController;
 use App\Http\Controllers\UserController;
 
-Route::resource('spare_types', SparetypeController::class);
-Route::resource('spares', SpareController::class);
-Route::resource('tasks', TaskController::class);
-Route::resource('services', ServiceController::class);
-Route::resource('devices', DeviceController::class);
-Route::resource('users', UserController::class);
+// Route::resource('spare_types', SparetypeController::class);
+// Route::resource('spares', SpareController::class);
+// Route::resource('tasks', TaskController::class);
+// Route::resource('services', ServiceController::class);
+// Route::resource('devices', DeviceController::class);
+// Route::resource('users', UserController::class);
 
-//Route::middleware(['auth:sanctum'])->group(function () {
+Route::middleware(['auth:sanctum'])->group(function () {
     //USERS
     Route::post('/users', [UserController::class, 'store']);
     Route::get('/users', [UserController::class, 'index']);
@@ -31,13 +31,6 @@ Route::resource('users', UserController::class);
     Route::get('/devices/{device}/edit', [DeviceController::class, 'edit']);
     Route::put('/devices/{device}', [DeviceController::class, 'update']);
     Route::delete('/devices/{device}', [DeviceController::class,'destroy']);
-
-    //SERVICES
-    Route::post('/services', [ServiceController::class, 'store']);
-    Route::get('/services', [ServiceController::class, 'index']);
-    Route::get('/services/{service}/edit', [ServiceController::class, 'edit']);
-    Route::put('/services/{service}', [ServiceController::class, 'update']);
-    Route::delete('/services/{service}', [ServiceController::class,'destroy']);
 
     //SERVICES
     Route::post('/services', [ServiceController::class, 'store']);
@@ -66,7 +59,7 @@ Route::resource('users', UserController::class);
     Route::get('/spare_types/{spare_type}/edit', [SpareTypeController::class, 'edit']);
     Route::put('/spare_types/{spare_type}', [SpareTypeController::class, 'update']);
     Route::delete('/spare_types/{spare_type}', [SpareTypeController::class,'destroy']);
-//});
+});
 
 Route::get('/debug', function (Request $request) {
     return response()->json([

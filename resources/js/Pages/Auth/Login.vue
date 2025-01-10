@@ -24,9 +24,26 @@ const form = useForm({
 
 const submit = () => {
     form.post(route('login'), {
+        onSuccess: (response) => {
+            console.log('Response from login:', response.props);
+
+            // Stocker le token dans localStorage
+            if (response.props.token) {
+                localStorage.setItem('Authorization', `Bearer ${response.props.token}`);
+                console.log('Token stored in localStorage:', localStorage.getItem('Authorization'));
+            } else {
+                console.error('No token received from the server.');
+            }
+
+            // Rediriger l'utilisateur si une route est spécifiée
+            if (response.props.redirect_route) {
+                window.location.href = response.props.redirect_route;
+            }
+        },
         onFinish: () => form.reset('password'),
     });
 };
+
 </script>
 
 <template>
@@ -69,6 +86,10 @@ const submit = () => {
                 <InputError class="mt-2" :message="form.errors.password" />
             </div>
 
+            <div v-if="form.errors.message" class="mt-4 text-red-600">
+                {{ form.errors.message }}
+            </div>
+
             <div class="mt-4 block">
                 <label class="flex items-center">
                     <Checkbox name="remember" v-model:checked="form.remember" />
@@ -92,7 +113,8 @@ const submit = () => {
                     :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing"
                 >
-                    Log in
+                    <span v-if="form.processing">Logging in...</span>
+                    <span v-else>Log in</span>
                 </PrimaryButton>
             </div>
         </form>

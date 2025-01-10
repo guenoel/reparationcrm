@@ -16,6 +16,7 @@ class RoleBasedAccessControl
     public function handle(Request $request, Closure $next): Response
     {
         if (!Auth::check()) {
+            Log::info('User not authenticated. Redirecting to login.');
             if ($request->expectsJson()) {
                 return response()->json(['message' => 'Unauthorized'], 401);
             }
@@ -25,12 +26,19 @@ class RoleBasedAccessControl
         $user_role = Auth::user()->role;
         $route_name = $request->route()->getName();
 
+        Log::info('User authenticated', ['role' => $user_role, 'route_name' => $route_name]);
+
         // Redirect to the correct dashboard if accessing the wrong one
         if ($this->isDashboardRoute($route_name)) {
             $canAccessDashboard = $this->canAccessDashboard($user_role, $route_name);
 
             if (!$canAccessDashboard) {
                 $redirectRoute = $this->getDashboardRouteForRole($user_role);
+                Log::info('Access to dashboard denied. Redirecting to correct dashboard.', [
+                    'current_route' => $route_name,
+                    'user_role' => $user_role,
+                    'redirect_route' => $redirectRoute
+                ]);
 
                 return redirect()->route($redirectRoute);
             }
@@ -40,6 +48,11 @@ class RoleBasedAccessControl
         $canAccessRoute = $this->canAccessRoute($user_role, $route_name);
 
         if (!$canAccessRoute) {
+            Log::warning('Access denied for route.', [
+                'user_role' => $user_role,
+                'route_name' => $route_name
+            ]);
+            
             abort(403, 'Unauthorized access');
         }
 

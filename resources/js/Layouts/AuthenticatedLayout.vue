@@ -11,6 +11,19 @@ import { usePage } from '@inertiajs/vue3';
 const page = usePage();
 const showingNavigationDropdown = ref(false);
 const userRole = page.props.auth.user.role; // Récupère le rôle de l'utilisateur
+
+// Fonction pour gérer la déconnexion
+const confirmLogout = () => {
+    if (window.confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
+        // Supprimer le token Bearer du localStorage
+        localStorage.removeItem('Authorization');
+
+        // Soumettre une requête POST pour la déconnexion via Inertia
+        const { url } = usePage().props.value.route;
+        Inertia.post(url('logout'));
+    }
+};
+
 </script>
 
 <template>
@@ -231,6 +244,7 @@ const userRole = page.props.auth.user.role; // Récupère le rôle de l'utilisat
                                 :href="route('logout')"
                                 method="post"
                                 as="button"
+                                @click.prevent="confirmLogout"
                             >
                                 Log Out
                             </ResponsiveNavLink>

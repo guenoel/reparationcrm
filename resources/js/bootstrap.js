@@ -1,17 +1,32 @@
 import axios from 'axios';
-window.axios = axios;
 
-// Set default headers for Axios
-window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+axios.defaults.withCredentials = true;
+axios.defaults.headers.common['Accept'] = 'application/json';
 
-// Extract the CSRF token from the cookie and set it as a default header
+
 const csrfToken = document.cookie
     .split('; ')
     .find(row => row.startsWith('XSRF-TOKEN='))
     ?.split('=')[1];
 
 if (csrfToken) {
-    window.axios.defaults.headers.common['X-CSRF-TOKEN'] = decodeURIComponent(csrfToken);
+    axios.defaults.headers.common['X-XSRF-TOKEN'] = decodeURIComponent(csrfToken);
 } else {
     console.error('CSRF token not found in cookies.');
 }
+
+// Fetch Bearer token from cookies or local storage
+// const bearerToken = document.cookie
+//     .split('; ')
+//     .find(row => row.startsWith('Authorization='))
+//     ?.split('=')[1];
+
+// Charger le token depuis le localStorage
+const token = localStorage.getItem('Authorization');
+
+if (token) {
+    axios.defaults.headers.common['Authorization'] = token;
+} else {
+    console.warn('No Authorization token found in localStorage.');
+}
+

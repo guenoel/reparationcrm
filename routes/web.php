@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DeviceController;
 use Illuminate\Foundation\Application;
@@ -105,7 +106,6 @@ Route::middleware(['auth', 'verified', 'role-based-access-control'])->group(func
         return Inertia::render('users/Form');
     })->middleware(['auth', 'verified', 'role-based-access-control'])->name('users.edit');
 });
-
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

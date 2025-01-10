@@ -25,13 +25,15 @@ class DeviceController extends Controller
         try {
             $devices = Device::query();
 
-            $user_role = Auth::user()->role;
-            $userId = Auth::id();
+            Log::info('User debug:', ['user' => Auth::user()]);
 
-            if ($user_role === 0) {
-                // Restrict devices to the logged-in user's own devices if they are a customer
-                $devices->where('user_id', $userId);
-            }
+            // $user_role = Auth::user()->role;
+            // $userId = Auth::id();
+
+            // if ($user_role === 0) {
+            //     // Restrict devices to the logged-in user's own devices if they are a customer
+            //     $devices->where('user_id', $userId);
+            //}
             if($request->searchQuery != ''){
                 $searchTerm = "%{$request->searchQuery}%";
             $devices = $devices->where(function ($query) use ($searchTerm) {
