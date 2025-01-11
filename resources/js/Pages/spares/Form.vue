@@ -42,8 +42,8 @@ onMounted(() => {
 
 const getServices = async () => {
     try {
-        let response = await axios.get('/api/services');
-        page.props.services = response.data.services.data;
+        let response = await axios.get('/api/services?all=true');
+        page.props.services = response.data.services;
     } catch (error) {
         console.error("Error fetching services:", error);
     }
@@ -51,8 +51,8 @@ const getServices = async () => {
 
 const getSpareTypes = async () => {
     try {
-        let response = await axios.get('/api/spare_types');
-        page.props.spare_types = response.data.spare_types.data;
+        let response = await axios.get('/api/spare_types?all=true');
+        page.props.spare_types = response.data.spare_types;
     } catch (error) {
         console.error("Error fetching spare_types:", error);
     }
@@ -61,23 +61,29 @@ const getSpareTypes = async () => {
 const getSpare = async () => {
     try {
         let response = await axios.get(`/api/spares/${spareId.value}/edit`)
-            //.then((response) => {
-            if (response.data.spare) {
-                form.image = response.data.spare.image;
-                form.service_id = response.data.spare.service_id;
-                form.spare_type_id = response.data.spare.spare_type_id;
-                form.description = response.data.spare.description;
-                form.purchase_date = response.data.spare.purchase_date;
-                form.reception_date = response.data.spare.reception_date;
-                form.return_date = response.data.spare.return_date;
-            //});
-            }
-            if (response.data.services) {
-            page.props.services = response.data.services; // Chargez les services si nécessaire
-            }
-            if (response.data.spare_type_id) {
-            page.props.spare_type_id = response.data.spare_type_id; // Chargez les types de pièces si nécessaire
-            }
+        if (response.data.services) {
+        page.props.services = Object.entries(response.data.services).map(([id, description]) => ({
+                id: Number(id),
+                description
+            }));
+        }
+        if (response.data.spare_types) {
+        page.props.spare_types = Object.entries(response.data.spare_types).map(([id, type]) => ({
+                id: Number(id),
+                type
+            }));
+        }
+        
+        if (response.data.spare) {
+            form.image = response.data.spare.image;
+            form.service_id = response.data.spare.service_id;
+            form.spare_type_id = response.data.spare.spare_type_id;
+            form.description = response.data.spare.description;
+            form.purchase_date = response.data.spare.purchase_date;
+            form.reception_date = response.data.spare.reception_date;
+            form.return_date = response.data.spare.return_date;
+
+        }
             
     } catch (error) {
         console.error("Error fetching spare data:", error);

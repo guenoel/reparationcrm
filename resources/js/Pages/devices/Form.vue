@@ -50,9 +50,11 @@ onMounted(() => {
 
 const getUsers = async () => {
     try {
-        let response = await axios.get('/api/users');
+        let response = await axios.get('/api/users?all=true');
         console.log(response.data.users);
-        page.props.users = response.data.users.data;
+        page.props.users = response.data.users;
+        const params = new URLSearchParams(window.location.search);
+        form.user_id = params.get('user_id'); // Preselect the user ID
     } catch (error) {
         console.error("Error fetching users:", error);
     }
@@ -61,7 +63,14 @@ const getUsers = async () => {
 const getDevice = async () => {
     try {
         let response = await axios.get(`/api/devices/${deviceId.value}/edit`)
-            //.then((response) => {
+            // Transformer l'objet users en tableau
+            if (response.data.users) {
+                page.props.users = Object.entries(response.data.users).map(([id, name]) => ({
+                    id: Number(id),
+                    name
+                }));
+            }
+
             if (response.data.device) {
                 form.image = response.data.device.image;
                 form.user_id = response.data.device.user_id;
@@ -71,12 +80,8 @@ const getDevice = async () => {
                 form.serial_number = response.data.device.serial_number;
                 form.imei = response.data.device.imei;
                 form.description = response.data.device.description;
-            //});
             }
-            if (response.data.users) {
-            page.props.users = response.data.users; // Chargez les utilisateurs si nécessaire
-            }
-            
+
     } catch (error) {
         console.error("Error fetching device data:", error);
     }

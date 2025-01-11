@@ -26,7 +26,12 @@ class UserController extends Controller
                         ->orWhere('role', 'like', $searchTerm);
             });
             }
-            $users = $users->latest()->paginate(5);
+            // Vérifier si le paramètre `all` est présent
+            if ($request->has('all') && $request->all == true) {
+                $users = $users->latest()->get(); // Récupérer tous les utilisateurs
+            } else {
+                $users = $users->latest()->paginate(5); // Pagination par défaut
+            }
 
             return response()->json([
                 'users' => $users

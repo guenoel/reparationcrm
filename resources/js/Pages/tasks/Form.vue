@@ -41,8 +41,8 @@ onMounted(() => {
 
 const getServices = async () => {
     try {
-        let response = await axios.get('/api/services');
-        page.props.services = response.data.services.data;
+        let response = await axios.get('/api/services?all=true');
+        page.props.services = response.data.services;
     } catch (error) {
         console.error("Error fetching services:", error);
     }
@@ -50,8 +50,8 @@ const getServices = async () => {
 
 const getUsers = async () => {
     try {
-        let response = await axios.get('/api/users');
-        page.props.users = response.data.users.data;
+        let response = await axios.get('/api/users?all=true');
+        page.props.users = response.data.users;
     } catch (error) {
         console.error("Error fetching users:", error);
     }
@@ -60,18 +60,29 @@ const getUsers = async () => {
 const getTask = async () => {
     try {
         let response = await axios.get(`/api/tasks/${taskId.value}/edit`)
-            //.then((response) => {
-            if (response.data.task) {
-                form.service_id = response.data.task.service_id;
-                form.user_id = response.data.task.user_id;
-                form.start = response.data.task.start;
-                form.end = response.data.task.end;
-                form.description = response.data.task.description;
-            //});
-            }
-            if (response.data.services) {
-            page.props.services = response.data.services; // Chargez les services si nécessaire
-            }
+        // Transformer l'objet services en tableau
+        if (response.data.services) {
+            page.props.services = Object.entries(response.data.services).map(([id, description]) => ({
+                id: Number(id),
+                description
+            }));
+        }
+
+        // Transformer l'objet users en tableau
+        if (response.data.users) {
+            page.props.users = Object.entries(response.data.users).map(([id, name]) => ({
+                id: Number(id),
+                name
+            }));
+        }
+
+        if (response.data.task) {
+            form.service_id = response.data.task.service_id;
+            form.user_id = response.data.task.user_id;
+            form.start = response.data.task.start;
+            form.end = response.data.task.end;
+            form.description = response.data.task.description;
+        }
             
     } catch (error) {
         console.error("Error fetching task data:", error);

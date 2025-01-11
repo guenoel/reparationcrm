@@ -26,6 +26,7 @@ const page = usePage();
 const editMode = ref(false);
 let errors = ref([]);
 const hideUserDropdown = ref(false); // To control dropdown visibility
+//const devices = ref([]);
 
 onMounted(() => {
     // Check user role and set dropdown visibility
@@ -45,9 +46,9 @@ onMounted(() => {
 
 const getDevices = async () => {
     try {
-        let response = await axios.get('/api/devices');
-        console.log("Devices Response:", response.data.devices.data);
-        page.props.devices = response.data.devices.data;
+        let response = await axios.get('/api/devices?all=true');
+        console.log("Devices Response:", response.data.devices);
+        page.props.devices = response.data.devices;
         const params = new URLSearchParams(window.location.search);
         form.device_id = params.get('device_id'); // Preselect the device ID
     } catch (error) {
@@ -57,21 +58,27 @@ const getDevices = async () => {
 
 const getService = async () => {
     try {
-        let response = await axios.get(`/api/services/${serviceId.value}/edit`)
-            //.then((response) => {
+            let response = await axios.get(`/api/services/${serviceId.value}/edit`)
+                
+            console.log("Service Response:", response.data);
+            // Transformer l'objet devices en tableau
+            if (response.data.devices) {
+                page.props.devices = Object.entries(response.data.devices).map(([id, label]) => ({
+                    id: Number(id),
+                    label: label
+                }));
+            }
+
             if (response.data.service) {
                 form.device_id = response.data.service.device_id;
                 form.description = response.data.service.description;
                 form.price = response.data.service.price;
                 form.accepted = response.data.service.accepted;
-            //});
             }
-            if (response.data.devices) {
-            page.props.devices = response.data.devices; // Chargez les utilisateurs si nécessaire
-            }
-    } catch (error) {
-        console.error("Error fetching service data:", error);
-    }
+
+        } catch (error) {
+            console.error("Error fetching service data:", error);
+        }
 };
 
 const handleSave = (values, actions) => {
@@ -142,7 +149,7 @@ const updateService = (values, actions) => {
                             <p class="mb-1">Appareil</p>
                             <select v-model="form.device_id" class="input" id="device_id" name="device_id">
                                 <option v-for="device in page.props.devices" :key="device.id" :value="device.id">
-                                    {{ device.brand }} {{ device.model_name }}
+                                    {{ device.label }}
                                 </option>
                             </select>
                             <small style="color:red" v-if="errors.device_id">{{ errors.device_id }}</small>

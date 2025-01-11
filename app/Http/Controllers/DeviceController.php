@@ -46,8 +46,12 @@ class DeviceController extends Controller
                         ->orWhere('description', 'like', $searchTerm);
             });
             }
+            // Vérifier si le paramètre `all` est présent
+            if ($request->has('all') && $request->all == true) {
+                $devices = $devices->with('user')->latest()->get();
+            } else {
             $devices = $devices->with('user')->latest()->paginate(5);
-
+            }
             return response()->json([
                 'devices' => $devices
             ], 200);

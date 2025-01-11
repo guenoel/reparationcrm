@@ -28,8 +28,12 @@ class SparetypeController extends Controller
                         ->orWhere('sell_price', 'like', $searchTerm);
             });
             }
+            // Vérifier si le paramètre `all` est présent
+            if ($request->has('all') && $request->all == true) {
+                $spare_types = $spare_types->latest()->get();
+            } else {
             $spare_types = $spare_types->latest()->paginate(5);
-
+            }
             return response()->json([
                 'spare_types' => $spare_types
             ], 200);

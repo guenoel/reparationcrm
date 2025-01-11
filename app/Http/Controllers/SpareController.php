@@ -38,7 +38,12 @@ class SpareController extends Controller
                         ->orWhere('description', 'like', $searchTerm);
             });
             }
+            // Vérifier si le paramètre `all` est présent
+            if ($request->has('all') && $request->all == true) {
+                $spares = $spares->whereHas('service')->with('service')->latest()->get();
+            } else {
             $spares = $spares->whereHas('service')->with('service')->latest()->paginate(5);
+            }
 
             return response()->json([
                 'spares' => $spares

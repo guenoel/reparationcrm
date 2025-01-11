@@ -26,6 +26,6 @@ class Service extends Authenticatable
     }
     public static function getServicesForDropdown()
     {
-        return self::pluck('id', 'id');
+        return self::pluck('description', 'id');
     }
 }
