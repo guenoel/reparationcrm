@@ -42,8 +42,8 @@ onMounted(() => {
 
 const getServices = async () => {
     try {
-        let response = await axios.get('/api/spares/create');
-        page.props.services = response.data.services;
+        let response = await axios.get('/api/services');
+        page.props.services = response.data.services.data;
     } catch (error) {
         console.error("Error fetching services:", error);
     }
@@ -51,8 +51,8 @@ const getServices = async () => {
 
 const getSpareTypes = async () => {
     try {
-        let response = await axios.get('/api/spares/create');
-        page.props.spare_types = response.data.spare_types;
+        let response = await axios.get('/api/spare_types');
+        page.props.spare_types = response.data.spare_types.data;
     } catch (error) {
         console.error("Error fetching spare_types:", error);
     }
@@ -177,13 +177,13 @@ const updateSpare = (values, actions) => {
                         <div class="spares__create__main--addInfo card py-2 px-2 bg-white">
                             <p class="mb-1">Service ID</p>
                             <select v-model="form.service_id" class="input" id="service_id" name="service_id">
-                                <option v-for="(name, id) in page.props.services" :key="id" :value="id">{{ name }}</option>
+                                <option v-for="service in page.props.services" :key="service.id" :value="service.id">{{ service.description }}</option>
                             </select>
                             <small style="color:red" v-if="errors.service_id">{{ errors.service_id }}</small>
 
                             <p class="mb-1">Pièce type ID</p>
                             <select v-model="form.spare_type_id" class="input" id="spare_type_id" name="spare_type_id">
-                                <option v-for="(name, id) in page.props.spare_types" :key="id" :value="id">{{ name }}</option>
+                                <option v-for="spare_type in page.props.spare_types" :key="spare_type.id" :value="spare_type.id">{{ spare_type.dealer }} {{ spare_type.type }}</option>
                             </select>
                             <small style="color:red" v-if="errors.spare_type_id">{{ errors.spare_type_id }}</small>
 

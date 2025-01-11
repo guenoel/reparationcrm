@@ -50,8 +50,9 @@ onMounted(() => {
 
 const getUsers = async () => {
     try {
-        let response = await axios.get('/api/devices/create');
-        page.props.users = response.data.users;
+        let response = await axios.get('/api/users');
+        console.log(response.data.users);
+        page.props.users = response.data.users.data;
     } catch (error) {
         console.error("Error fetching users:", error);
     }
@@ -175,7 +176,9 @@ const updateDevice = (values, actions) => {
                             <div v-if="!hideUserDropdown">
                                 <p class="mb-1">Utilisateur</p>
                                 <select v-model="form.user_id" class="input" id="user_id" name="user_id">
-                                    <option v-for="(name, id) in page.props.users" :key="id" :value="id">{{ name }}</option>
+                                    <option v-for="user in page.props.users" :key="user.id" :value="user.id">
+                                        {{ user.name }}
+                                    </option>
                                 </select>
                                 <small style="color:red" v-if="errors.user_id">{{ errors.user_id }}</small>
                             </div>

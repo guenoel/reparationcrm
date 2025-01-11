@@ -41,8 +41,8 @@ onMounted(() => {
 
 const getServices = async () => {
     try {
-        let response = await axios.get('/api/tasks/create');
-        page.props.services = response.data.services;
+        let response = await axios.get('/api/services');
+        page.props.services = response.data.services.data;
     } catch (error) {
         console.error("Error fetching services:", error);
     }
@@ -50,8 +50,8 @@ const getServices = async () => {
 
 const getUsers = async () => {
     try {
-        let response = await axios.get('/api/devices/create');
-        page.props.users = response.data.users;
+        let response = await axios.get('/api/users');
+        page.props.users = response.data.users.data;
     } catch (error) {
         console.error("Error fetching users:", error);
     }
@@ -171,13 +171,15 @@ const updateTask = (values, actions) => {
                         <div class="tasks__create__main--addInfo card py-2 px-2 bg-white">
                             <p class="mb-1">Service ID</p>
                             <select v-model="form.service_id" class="input" id="service_id" name="service_id">
-                                <option v-for="(name, id) in page.props.services" :key="id" :value="id">{{ name }}</option>
+                                <option v-for="service in page.props.services" :key="service.id" :value="service.id">{{ service.description }}</option>
                             </select>
                             <small style="color:red" v-if="errors.service_id">{{ errors.service_id }}</small>
 
                             <p class="mb-1">Technicien</p>
                             <select v-model="form.user_id" class="input" id="user_id" name="user_id">
-                                <option v-for="(name, id) in page.props.users" :key="id" :value="id">{{ name }}</option>
+                                <option v-for="user in page.props.users" :key="user.id" :value="user.id">
+                                    {{ user.name }}
+                                </option>
                             </select>
                             <small style="color:red" v-if="errors.user_id">{{ errors.user_id }}</small>
 

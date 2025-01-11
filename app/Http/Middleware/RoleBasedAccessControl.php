@@ -103,7 +103,7 @@ class RoleBasedAccessControl
     {
         $canAccess = match ($route_name) {
             // Accessible only to Admins (role >= 2)
-            'dashboard_admin', 'users.index', 'spare_types.index', 'users.edit', 'spare_types.edit' => $role >= 2,
+            'dashboard_admin', 'users.index', 'spare_types.index', 'users.edit', 'spare_types.create', 'spare_types.edit' => $role >= 2,
 
             // Accessible to Workers and Admins (role >= 1)
             'dashboard_worker', 'tasks.index', 'tasks.create', 'tasks.edit', 'spares.index', 'spares.create', 'spares.edit' => $role >= 1,

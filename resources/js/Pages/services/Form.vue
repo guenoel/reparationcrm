@@ -45,8 +45,9 @@ onMounted(() => {
 
 const getDevices = async () => {
     try {
-        let response = await axios.get('/api/services/create');
-        page.props.devices = response.data.devices;
+        let response = await axios.get('/api/devices');
+        console.log("Devices Response:", response.data.devices.data);
+        page.props.devices = response.data.devices.data;
         const params = new URLSearchParams(window.location.search);
         form.device_id = params.get('device_id'); // Preselect the device ID
     } catch (error) {
@@ -140,7 +141,9 @@ const updateService = (values, actions) => {
                         <div class="services__create__main--addInfo card py-2 px-2 bg-white">
                             <p class="mb-1">Appareil</p>
                             <select v-model="form.device_id" class="input" id="device_id" name="device_id">
-                                <option v-for="(name, id) in page.props.devices" :key="id" :value="id">{{ name }}</option>
+                                <option v-for="device in page.props.devices" :key="device.id" :value="device.id">
+                                    {{ device.brand }} {{ device.model_name }}
+                                </option>
                             </select>
                             <small style="color:red" v-if="errors.device_id">{{ errors.device_id }}</small>
                             <p class="my-1">Description du service demandé</p>
