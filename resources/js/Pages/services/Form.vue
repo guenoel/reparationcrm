@@ -147,9 +147,14 @@ const updateService = (values, actions) => {
                     <div class="services__create__main">
                         <div class="services__create__main--addInfo card py-2 px-2 bg-white">
                             <p class="mb-1">Appareil</p>
-                            <select v-model="form.device_id" class="input" id="device_id" name="device_id">
+                            <select v-if="editMode" v-model="form.device_id" class="input" id="device_id" name="device_id">
                                 <option v-for="device in page.props.devices" :key="device.id" :value="device.id">
                                     {{ device.label }}
+                                </option>
+                            </select>
+                            <select v-else v-model="form.device_id" class="input" id="device_id" name="device_id">
+                                <option v-for="device in page.props.devices" :key="device.id" :value="device.id">
+                                    {{ device.user.name }} - {{ device.brand }} {{ device.model_name }}
                                 </option>
                             </select>
                             <small style="color:red" v-if="errors.device_id">{{ errors.device_id }}</small>
