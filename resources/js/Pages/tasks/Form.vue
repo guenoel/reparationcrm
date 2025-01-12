@@ -12,7 +12,6 @@ const taskId = ref();
 
 const form = reactive({
     service_id: '',
-    user_id: '',
     start: '',
     end: '',
     description: '',
@@ -35,7 +34,7 @@ onMounted(() => {
         getTask();
     } else {
         getServices();
-        getUsers();
+        getUser();
     }
 });
 
@@ -43,17 +42,18 @@ const getServices = async () => {
     try {
         let response = await axios.get('/api/services?all=true');
         page.props.services = response.data.services;
+        const params = new URLSearchParams(window.location.search);
+        form.service_id = params.get('service_id'); // Preselect the service ID
     } catch (error) {
         console.error("Error fetching services:", error);
     }
 };
 
-const getUsers = async () => {
+const getUser = async () => {
     try {
-        let response = await axios.get('/api/users?all=true');
-        page.props.users = response.data.users;
+        form.user_id = page.props.auth.user.id;
     } catch (error) {
-        console.error("Error fetching users:", error);
+        console.error("Error fetching user:", error);
     }
 };
 
@@ -68,17 +68,8 @@ const getTask = async () => {
             }));
         }
 
-        // Transformer l'objet users en tableau
-        if (response.data.users) {
-            page.props.users = Object.entries(response.data.users).map(([id, name]) => ({
-                id: Number(id),
-                name
-            }));
-        }
-
         if (response.data.task) {
             form.service_id = response.data.task.service_id;
-            form.user_id = response.data.task.user_id;
             form.start = response.data.task.start;
             form.end = response.data.task.end;
             form.description = response.data.task.description;
@@ -182,17 +173,19 @@ const updateTask = (values, actions) => {
                         <div class="tasks__create__main--addInfo card py-2 px-2 bg-white">
                             <p class="mb-1">Service ID</p>
                             <select v-model="form.service_id" class="input" id="service_id" name="service_id">
-                                <option v-for="service in page.props.services" :key="service.id" :value="service.id">{{ service.description }}</option>
+                                <option v-for="service in page.props.services" :key="service.id" :value="service.id">
+                                    {{ service.device.user.name }} -> {{ service.device.brand }} {{ service.device.model_name }} -> {{ service.description }}
+                                </option>
                             </select>
                             <small style="color:red" v-if="errors.service_id">{{ errors.service_id }}</small>
 
-                            <p class="mb-1">Technicien</p>
+                            <!-- <p class="mb-1">Technicien</p>
                             <select v-model="form.user_id" class="input" id="user_id" name="user_id">
                                 <option v-for="user in page.props.users" :key="user.id" :value="user.id">
                                     {{ user.name }}
                                 </option>
                             </select>
-                            <small style="color:red" v-if="errors.user_id">{{ errors.user_id }}</small>
+                            <small style="color:red" v-if="errors.user_id">{{ errors.user_id }}</small> -->
 
                             <p class="mb-1">Début de la tâche</p>
                             <input type="datetime-local" class="input" id="start" name="start" v-model="form.start" />

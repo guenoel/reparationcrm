@@ -116,7 +116,7 @@ const deleteTask = (id) => {
                             v-model="searchQuery" />
                     </div>
 
-                    <div class="table--heading mt-2 services__list__heading " style="padding-top: 20px;background:#FFF">
+                    <div class="table--heading mt-2 tasks__list__heading " style="padding-top: 20px;background:#FFF">
                         <p class="table--heading--col1">Image</p>
                         <p class="table--heading--col2">Service ID</p>
                         <p class="table--heading--col3">Début</p>
@@ -126,7 +126,7 @@ const deleteTask = (id) => {
                     </div>
 
                     <!-- device 1 -->
-                    <div class="table--items services__list__item" v-for="task in tasks" :key="task.id">
+                    <div class="table--items tasks__list__item" v-for="task in tasks" :key="task.id">
                         <!-- <p>{{ task.device.service.user.name }}</p> -->
                         <img :src="ourTaskImage(task.image)" />
                         <p>{{ task.service_id }}</p>

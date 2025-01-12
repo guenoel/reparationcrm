@@ -26,6 +26,28 @@ class Service extends Authenticatable
     }
     public static function getServicesForDropdown()
     {
-        return self::pluck('description', 'id');
+        return self::select(
+                'services.id', 
+                'services.device_id', 
+                'devices.user_id', 
+                'devices.brand', 
+                'devices.model_name', 
+                'devices.serial_number', 
+                'users.name', 
+                'services.description'
+            )
+            ->join('devices', 'devices.id', '=', 'services.device_id') // Join with devices table
+            ->join('users', 'users.id', '=', 'devices.user_id') // Join with users table via devices
+            ->get()
+            ->mapWithKeys(function ($service) {
+                return [
+                    $service->id => $service->name . ' / ' 
+                        . $service->brand . ' / ' 
+                        . $service->model_name . ' / ' 
+                        . $service->serial_number . ' / ' 
+                        . $service->description, // Add service description
+                ];
+            });
     }
+
 }

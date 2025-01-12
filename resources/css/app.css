@@ -94,8 +94,23 @@ main h1 ~ p {
 }
 
 .services__list__heading {
-    -ms-grid-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 80px;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 80px;
+    -ms-grid-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 80px 160px 160px;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 80px 160px 160px;
+}
+
+.tasks__list__heading {
+    -ms-grid-columns: 1fr 1fr 1fr 1fr 1fr 80px 200px;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 80px 200px;
+}
+
+.spares__list__heading {
+    -ms-grid-columns: 1fr 1fr 1fr 1fr 1fr 1fr 80px 200px;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 80px 200px;
+}
+
+.spare_types__list__heading {
+    -ms-grid-columns: 1fr 1fr 1fr 1fr 1fr 1fr 80px 200px;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 80px 200px;
 }
 
 .table--items {
@@ -126,8 +141,32 @@ main h1 ~ p {
     border-bottom: 1px solid #e0e0e0;
     /* -ms-grid-columns: 80px 1fr 1fr 1fr 1fr 80px;
     grid-template-columns: 80px 1fr 1fr 1fr 1fr 80px; */
-    -ms-grid-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 80px;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 80px;
+    -ms-grid-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 80px 160px 160px;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 80px 160px 160px;
+}
+
+.tasks__list__item {
+    border-bottom: 1px solid #e0e0e0;
+    /* -ms-grid-columns: 80px 1fr 1fr 1fr 1fr 80px;
+    grid-template-columns: 80px 1fr 1fr 1fr 1fr 80px; */
+    -ms-grid-columns: 1fr 1fr 1fr 1fr 1fr 80px 200px;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 80px 200px;
+}
+
+.spares__list__item {
+    border-bottom: 1px solid #e0e0e0;
+    /* -ms-grid-columns: 80px 1fr 1fr 1fr 1fr 80px;
+    grid-template-columns: 80px 1fr 1fr 1fr 1fr 80px; */
+    -ms-grid-columns: 1fr 1fr 1fr 1fr 1fr 1fr 80px 200px;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 80px 200px;
+}
+
+.spare_types__list__item {
+    border-bottom: 1px solid #e0e0e0;
+    /* -ms-grid-columns: 80px 1fr 1fr 1fr 1fr 80px;
+    grid-template-columns: 80px 1fr 1fr 1fr 1fr 80px; */
+    -ms-grid-columns: 1fr 1fr 1fr 1fr 1fr 1fr 80px 200px;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 80px 200px;
 }
 
 .devices__list__bottom {

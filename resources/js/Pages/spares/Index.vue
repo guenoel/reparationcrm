@@ -116,7 +116,7 @@ const deleteSpare = (id) => {
                             v-model="searchQuery" />
                     </div>
 
-                    <div class="table--heading mt-2 services__list__heading " style="padding-top: 20px;background:#FFF">
+                    <div class="table--heading mt-2 spares__list__heading " style="padding-top: 20px;background:#FFF">
                         <p class="table--heading--col1">Image</p>
                         <p class="table--heading--col2">Service ID</p>
                         <p class="table--heading--col3">Spare Type ID</p>
@@ -127,7 +127,7 @@ const deleteSpare = (id) => {
                     </div>
 
                     <!-- device 1 -->
-                    <div class="table--items services__list__item" v-for="spare in spares" :key="spare.id">
+                    <div class="table--items spares__list__item" v-for="spare in spares" :key="spare.id">
                         <!-- <p>{{ spare.device.service.spare_type.name }}</p> -->
                         <img :src="ourSpareImage(spare.image)" />
                         <p>{{ spare.service_id }}</p>

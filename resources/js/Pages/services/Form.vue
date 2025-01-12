@@ -155,7 +155,7 @@ const updateService = (values, actions) => {
                             </select>
                             <select v-else v-model="form.device_id" class="input" id="device_id" name="device_id">
                                 <option v-for="device in page.props.devices" :key="device.id" :value="device.id">
-                                    {{ device.user.name }} - {{ device.brand }} {{ device.model_name }}
+                                    {{ device.user.name }} -> {{ device.brand }} {{ device.model_name }}
                                 </option>
                             </select>
                             <small style="color:red" v-if="errors.device_id">{{ errors.device_id }}</small>

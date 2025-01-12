@@ -4,6 +4,7 @@ import { Head, Link } from '@inertiajs/vue3';
 import axios from 'axios';
 import { ref, onMounted, watch } from 'vue';
 import { Inertia } from '@inertiajs/inertia';
+import { usePage } from '@inertiajs/vue3';
 //import { useRoute, useRouter } from 'vue-router';
 
 //const router = useRouter()
@@ -14,12 +15,19 @@ import { Inertia } from '@inertiajs/inertia';
 //         required: true
 //     }
 // });
-
+const page = usePage();
 let services = ref([]);
 let links = ref([]);
 let searchQuery = ref('');
+const hideUserDropdown = ref(false); // To control dropdown visibility
 
 onMounted(async () => {
+    // Check user role and set dropdown visibility
+    const authUser = page.props.auth.user;
+    if (authUser && authUser.role === 0) {
+        hideUserDropdown.value = true;
+    }
+    
     getServices();
 });
 
@@ -41,6 +49,16 @@ const getServices = async () => {
     } catch (error) {
         console.error("Error fetching services:", error);
     }
+};
+
+const redirectToTaskForm = (serviceId) => {
+  // Redirect to the task form with the service_id as a query parameter
+    Inertia.visit(`/tasks/create?service_id=${serviceId}`);
+};
+
+const redirectToSpareForm = (serviceId) => {
+  // Redirect to the spare form with the service_id as a query parameter
+    Inertia.visit(`/spares/create?service_id=${serviceId}`);
 };
 
 const changePage = (link) => {
@@ -140,6 +158,16 @@ const deleteService = (id) => {
                             <button class="btn-icon btn-icon-danger" @click="deleteService(service.id)">
                                 <i class="far fa-trash-alt"></i>
                             </button>
+                        </div>
+                        <div v-if="!hideUserDropdown">
+                            <Link href="/tasks/create" class="btn btn-secondary my-1" @click="redirectToTaskForm(service.id)">
+                            Ajouter une tâche
+                            </Link>
+                        </div>
+                        <div v-if="!hideUserDropdown">
+                            <Link href="/spares/create" class="btn btn-secondary my-1" @click="redirectToSpareForm(service.id)">
+                            Ajouter une pièce
+                            </Link>
                         </div>
                     </div>
                     <div class="table--items devices__list__bottom">

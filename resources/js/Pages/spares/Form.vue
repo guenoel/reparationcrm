@@ -44,6 +44,8 @@ const getServices = async () => {
     try {
         let response = await axios.get('/api/services?all=true');
         page.props.services = response.data.services;
+        const params = new URLSearchParams(window.location.search);
+        form.service_id = params.get('service_id'); // Preselect the service ID
     } catch (error) {
         console.error("Error fetching services:", error);
     }
@@ -183,7 +185,9 @@ const updateSpare = (values, actions) => {
                         <div class="spares__create__main--addInfo card py-2 px-2 bg-white">
                             <p class="mb-1">Service ID</p>
                             <select v-model="form.service_id" class="input" id="service_id" name="service_id">
-                                <option v-for="service in page.props.services" :key="service.id" :value="service.id">{{ service.description }}</option>
+                                <option v-for="service in page.props.services" :key="service.id" :value="service.id">
+                                    {{ service.device.user.name }} -> {{ service.device.brand }} {{ service.device.model_name }} -> {{ service.description }}
+                                </option>
                             </select>
                             <small style="color:red" v-if="errors.service_id">{{ errors.service_id }}</small>
 

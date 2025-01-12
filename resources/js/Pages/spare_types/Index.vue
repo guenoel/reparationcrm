@@ -99,7 +99,7 @@ const deleteSpareType = (id) => {
         </template>
         <template #default>
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                <div class="devices__list table">
+                <div class="spare_types__list table">
                     <div class="customers__titlebar dflex justify-content-between align-items-center">
                         <div class="customers__titlebar--item">
                             <h1>Type de pièces</h1>
@@ -116,7 +116,7 @@ const deleteSpareType = (id) => {
                             v-model="searchQuery" />
                     </div>
 
-                    <div class="table--heading mt-2 devices__list__heading " style="padding-top: 20px;background:#FFF">
+                    <div class="table--heading mt-2 spare_types__list__heading " style="padding-top: 20px;background:#FFF">
                         <p class="table--heading--col1">Image</p>
                         <p class="table--heading--col2">Fournisseur</p>
                         <p class="table--heading--col3">Type</p>
@@ -128,7 +128,7 @@ const deleteSpareType = (id) => {
                     </div>
 
                     <!-- device 1 -->
-                    <div class="table--items devices__list__item" v-for="spare_type in spare_types" :key="spare_type.id">
+                    <div class="table--items spare_types__list__item" v-for="spare_type in spare_types" :key="spare_type.id">
                         <img :src="ourSpareTypeImage(spare_type.image)" />
                         <p>{{ spare_type.dealer }}</p>
                         <p>{{ spare_type.type }}</p>

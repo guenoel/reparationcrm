@@ -7,6 +7,7 @@ use App\Models\Task;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use Intervention\Image\Laravel\Facades\Image;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Log;
 use function Pest\Laravel\get;
@@ -59,12 +60,7 @@ class TaskController extends Controller
     public function create()
     {
         $services = Service::getServicesForDropdown();
-        $users = User::getUsersForDropdown();
-        //$services = Service::all()->pluck('name', 'id');
-        //Log::info('Services:', Service::all()->toArray());
-        //return Inertia::render('Tasks/Form', [
         return response()->json([
-            'users' => $users,
             'services' => $services,
             'route' => 'task.create'
         ]);
@@ -94,7 +90,7 @@ class TaskController extends Controller
         $task = new Task();
 
         $task->service_id = $request->service_id;
-        $task->user_id = $request->user_id;
+        $task->user_id = Auth::id();
         if ($request->image != "") {
             $strpos = strpos($request->image, ';');
             $sub = substr($request->image, 0, $strpos);
