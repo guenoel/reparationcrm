@@ -39,10 +39,11 @@ class TaskController extends Controller
                         ->orWhere('description', 'like', $searchTerm);
             });
             }
-            // Vérifier si le paramètre `all` est présent
+            // Vérifier si le paramètre `all` est présent pour la création
             if ($request->has('all') && $request->all == true) {
                 $tasks = $tasks->whereHas('service')->with(['service', 'service.device'])->latest()->get();
             } else {
+            // ... sinon c'est avec pagination pour l'index.
             $tasks = $tasks->whereHas('service')->with(['service', 'service.device'])->latest()->paginate(5);
             }
 

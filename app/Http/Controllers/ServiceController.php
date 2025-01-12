@@ -36,10 +36,11 @@ class ServiceController extends Controller
                         ->orWhere('price', 'like', $searchTerm);
             });
             }
-            // Vérifier si le paramètre `all` est présent
+            // Vérifier si le paramètre `all` est présent pour la création du service...
             if ($request->has('all') && $request->all == true) {
                 $services = $services->whereHas('device')->with(['device', 'device.user'])->latest()->get();
             } else {
+            // ... sinon c'est avec pagination pour l'index.
             $services = $services->whereHas('device')->with(['device', 'device.user'])->latest()->paginate(5);
             }
             return response()->json([

@@ -38,10 +38,11 @@ class SpareController extends Controller
                         ->orWhere('description', 'like', $searchTerm);
             });
             }
-            // Vérifier si le paramètre `all` est présent
+            // Vérifier si le paramètre `all` est présent pour la création
             if ($request->has('all') && $request->all == true) {
                 $spares = $spares->whereHas('service')->with('service')->latest()->get();
             } else {
+                // ... sinon c'est avec pagination pour l'index.
             $spares = $spares->whereHas('service')->with('service')->latest()->paginate(5);
             }
 

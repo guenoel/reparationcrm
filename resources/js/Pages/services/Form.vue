@@ -47,6 +47,7 @@ onMounted(() => {
 const getDevices = async () => {
     try {
         let response = await axios.get('/api/devices?all=true');
+        //response: liste des appareils avec tous les champs non concaténés
         console.log("Devices Response:", response.data.devices);
         page.props.devices = response.data.devices;
         const params = new URLSearchParams(window.location.search);
@@ -59,7 +60,7 @@ const getDevices = async () => {
 const getService = async () => {
     try {
             let response = await axios.get(`/api/services/${serviceId.value}/edit`)
-                
+            // response: le service demandé + list of devices avec infos concaténées
             console.log("Service Response:", response.data);
             // Transformer l'objet devices en tableau
             if (response.data.devices) {
