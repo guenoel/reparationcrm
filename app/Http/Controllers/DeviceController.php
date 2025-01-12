@@ -61,6 +61,34 @@ class DeviceController extends Controller
         }
     }
 
+    public function new_form(Request $request)
+    {
+        try {
+            $user_role = Auth::user()->role;
+            $userId = Auth::id();
+
+            if ($user_role === 0) {
+                // Restrict devices to the logged-in user's own devices if they are a customer
+                $devices = Device::where('user_id', $userId)->get();
+            } else if ($user_role === 1) {
+                if ($request->has('device_form') && $request->device_form == true){
+                    $devices = Device::query();
+                } else {
+                    $devices = Device::where('role', '>', 0)->get();
+                }
+            } else {
+                $devices = Device::all();
+            }
+
+            return response()->json([
+                'devices' => $devices
+            ], 200);
+        } catch (\Exception $e) {
+            Log::error('Error fetching devices: ' . $e->getMessage());
+            return response()->json(['error' => 'An error occurred while fetching devices'], 500);
+        }
+    }
+
     public function create()
     {
         $users = User::getUsersForDropdown();

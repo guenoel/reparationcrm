@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Intervention\Image\Laravel\Facades\Image;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Log;
 use function Pest\Laravel\get;
@@ -15,6 +16,14 @@ class UserController extends Controller
     {
         try {
             $users = User::query();
+
+            $user_role = Auth::user()->role;
+            $userId = Auth::id();
+
+            if ($user_role === 1 && $request->has('all') && $request->all == true) {
+                // Restrict devices to the logged-in user's own devices if they are a customer
+                $users->where('id', $userId);
+            }
             if($request->searchQuery != ''){
                 $searchTerm = "%{$request->searchQuery}%";
             
@@ -32,6 +41,37 @@ class UserController extends Controller
             } else {
             // ... sinon c'est avec pagination pour l'index.
                 $users = $users->latest()->paginate(5); // Pagination par défaut
+            }
+
+            return response()->json([
+                'users' => $users
+            ], 200);
+        } catch (\Exception $e) {
+            Log::error('Error fetching devices: ' . $e->getMessage());
+            return response()->json(['error' => 'An error occurred while fetching devices'], 500);
+        }
+    }
+
+    public function new_form(Request $request)
+    {
+        try {
+            $user_role = Auth::user()->role;
+            $userId = Auth::id();
+
+            if ($user_role === 0) {
+                // Restrict users to the logged-in user's if they are a customer
+                $users = User::where('id', $userId)->get();
+                Log::info('User debug:', ['user' => Auth::user()]);
+            } else if ($user_role === 1) {
+                if ($request->has('task_form') && $request->task_form == true){
+                    $users = User::where('role', '>', 0)->get();
+                } else {
+                    $users = User::query();
+                    $users = $users->latest()->get();
+                }
+            } else {
+                $users = User::query();
+                $users = $users->latest()->get();
             }
 
             return response()->json([

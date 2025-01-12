@@ -20,6 +20,7 @@ use App\Http\Controllers\UserController;
 Route::middleware(['auth:sanctum'])->group(function () {
     //USERS
     Route::post('/users', [UserController::class, 'store']);
+    Route::get('/users/new_form', [UserController::class, 'new_form']);
     Route::get('/users', [UserController::class, 'index']);
     Route::get('/users/{user}/edit', [UserController::class, 'edit']);
     Route::put('/users/{user}', [UserController::class, 'update']);
@@ -27,6 +28,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     //DEVICES
 
     Route::post('/devices', [DeviceController::class, 'store']);
+    Route::get('/devices/create', [DeviceController::class, 'create']);
     Route::get('/devices', [DeviceController::class, 'index']);
     Route::get('/devices/{device}/edit', [DeviceController::class, 'edit']);
     Route::put('/devices/{device}', [DeviceController::class, 'update']);

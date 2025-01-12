@@ -50,14 +50,16 @@ onMounted(() => {
 
 const getUsers = async () => {
     try {
-        let response = await axios.get('/api/users?all=true');
-        console.log(response.data.users);
-        page.props.users = response.data.users;
-        const params = new URLSearchParams(window.location.search);
-        form.user_id = params.get('user_id'); // Preselect the user ID
-    } catch (error) {
-        console.error("Error fetching users:", error);
-    }
+            let response = await axios.get('/api/users/new_form');
+            page.props.users = response.data.users;
+            // for pre-selecting user in dropdown menu
+            const params = new URLSearchParams(window.location.search);
+            if (!form.user_id) {
+                form.user_id = params.get('user_id');
+            }
+        } catch (error) {
+            console.error("Error fetching users:", error);
+        }
 };
 
 const getDevice = async () => {
@@ -123,6 +125,7 @@ const handleSave = (values, actions) => {
 };
 
 const createDevice = (values, actions) => {
+    console.log('Form data being sent:', JSON.stringify(form, null, 2));
     axios.post('/api/devices', form)
         .then((response) => {
             toast.fire({ icon: "success", title: "Appareil ajouté" });
