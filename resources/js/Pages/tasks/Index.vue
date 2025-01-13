@@ -86,6 +86,17 @@ const deleteTask = (id) => {
         }
     });
 };
+
+const formatTaskDate = (timestamp) => {
+    if (!timestamp || timestamp === 0) {
+        return "";
+    }
+    const date = new Date(timestamp);
+    const formattedDate = date.toLocaleDateString('fr-FR'); // Date en format français
+    const formattedTime = date.toLocaleTimeString('fr-FR'); // Heure en format français
+    return { date: formattedDate, time: formattedTime };
+};
+
 </script>
 
 <template>
@@ -119,10 +130,11 @@ const deleteTask = (id) => {
                     <div class="table--heading mt-2 tasks__list__heading " style="padding-top: 20px;background:#FFF">
                         <p class="table--heading--col1">Image</p>
                         <p class="table--heading--col2">Prestation</p>
-                        <p class="table--heading--col3">Début</p>
-                        <p class="table--heading--col4">Fin</p>
-                        <p class="table--heading--col5">Description</p>
-                        <p class="table--heading--col6">Actions</p>
+                        <p class="table--heading--col3">Technicien</p>
+                        <p class="table--heading--col4">Début</p>
+                        <p class="table--heading--col5">Fin</p>
+                        <p class="table--heading--col6">Description</p>
+                        <p class="table--heading--col7">Actions</p>
                     </div>
 
                     <!-- device 1 -->
@@ -130,8 +142,15 @@ const deleteTask = (id) => {
                         <!-- <p>{{ task.device.service.user.name }}</p> -->
                         <img :src="ourTaskImage(task.image)" />
                         <p>{{ task.service.device.user.name }} -> {{ task.service.device.brand }} {{ task.service.device.model_name }}<br>-> {{ task.service.description }}</p>
-                        <p>{{ task.start }}</p>
-                        <p>{{ task.end }}</p>
+                        <p>{{ task.user.name }}</p>
+                        <p>
+                            {{ formatTaskDate(task.start).date }}<br>
+                            {{ formatTaskDate(task.start).time }}
+                        </p>
+                        <p>
+                            {{ formatTaskDate(task.end).date }}<br>
+                            {{ formatTaskDate(task.end).time }}
+                        </p>
                         <p>{{ task.description }}</p>
                         <div>
                             <button class="btn-icon btn-icon-success" @click="onEdit(task.id)">

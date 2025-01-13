@@ -45,7 +45,7 @@ class TaskController extends Controller
                 $tasks = $tasks->whereHas('service')->with(['service', 'service.device', 'service.device.user'])->latest()->get();
             } else {
             // ... sinon c'est avec pagination pour l'index.
-            $tasks = $tasks->whereHas('service')->with(['service', 'service.device', 'service.device.user'])->latest()->paginate(5);
+            $tasks = $tasks->whereHas('service')->with(['service', 'service.device', 'service.device.user', 'user'])->latest()->paginate(5);
             }
 
             return response()->json([

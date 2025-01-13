@@ -86,6 +86,16 @@ const deleteSpare = (id) => {
         }
     });
 };
+
+const formatTaskDate = (timestamp) => {
+    if (!timestamp || timestamp === 0) {
+        return "";
+    }
+    const date = new Date(timestamp);
+    const formattedDate = date.toLocaleDateString('fr-FR'); // Date en format français
+    const formattedTime = date.toLocaleTimeString('fr-FR'); // Heure en format français
+    return { date: formattedDate, time: formattedTime };
+};
 </script>
 
 <template>
@@ -133,9 +143,18 @@ const deleteSpare = (id) => {
                         <p>{{ spare.service.device.user.name }} -> {{ spare.service.device.brand }} {{ spare.service.device.model_name }}<br>-> {{ spare.service.description }}</p>
                         <p>{{ spare.spare_type.dealer }}<br>{{ spare.spare_type.type }}<br>{{ spare.spare_type.brand }}</p>
                         <p>{{ spare.description }}</p>
-                        <p>{{ spare.purchase_date }}</p>
-                        <p>{{ spare.reception_date }}</p>
-                        <p>{{ spare.return_date }}</p>
+                        <p>
+                            {{ formatTaskDate(spare.purchase_date).date }}<br>
+                            {{ formatTaskDate(spare.purchase_date).time }}
+                        </p>
+                        <p>
+                            {{ formatTaskDate(spare.reception_date).date }}<br>
+                            {{ formatTaskDate(spare.reception_date).time }}
+                        </p>
+                        <p>
+                            {{ formatTaskDate(spare.return_date).date }}<br>
+                            {{ formatTaskDate(spare.return_date).time }}
+                        </p>
                         <div>
                             <button class="btn-icon btn-icon-success" @click="onEdit(spare.id)">
                                 <i class="fas fa-pencil-alt"></i>

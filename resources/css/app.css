@@ -99,8 +99,8 @@ main h1 ~ p {
 }
 
 .tasks__list__heading {
-    -ms-grid-columns: 100px 300px 1fr 1fr 1fr 80px 20px;
-    grid-template-columns: 100px 300px 1fr 1fr 1fr 80px 20px;
+    -ms-grid-columns: 100px 250px 100px 1fr 1fr 1fr 80px 20px;
+    grid-template-columns: 100px 250px 100px 1fr 1fr 1fr 80px 20px;
 }
 
 .spares__list__heading {
@@ -149,8 +149,8 @@ main h1 ~ p {
     border-bottom: 1px solid #e0e0e0;
     /* -ms-grid-columns: 80px 1fr 1fr 1fr 1fr 80px;
     grid-template-columns: 80px 1fr 1fr 1fr 1fr 80px; */
-    -ms-grid-columns: 100px 250px 1fr 1fr 1fr 80px 20px;
-    grid-template-columns: 100px 250px 1fr 1fr 1fr 80px 20px;
+    -ms-grid-columns: 100px 250px 100px 1fr 1fr 1fr 80px 20px;
+    grid-template-columns: 100px 250px 100px 1fr 1fr 1fr 80px 20px;
 }
 
 .spares__list__item {
