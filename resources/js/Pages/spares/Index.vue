@@ -118,8 +118,8 @@ const deleteSpare = (id) => {
 
                     <div class="table--heading mt-2 spares__list__heading " style="padding-top: 20px;background:#FFF">
                         <p class="table--heading--col1">Image</p>
-                        <p class="table--heading--col2">Service ID</p>
-                        <p class="table--heading--col3">Spare Type ID</p>
+                        <p class="table--heading--col2">Prestation</p>
+                        <p class="table--heading--col3">Type de pièce</p>
                         <p class="table--heading--col4">Description</p>
                         <p class="table--heading--col5">Date de commande</p>
                         <p class="table--heading--col6">Date de reception</p>
@@ -130,8 +130,8 @@ const deleteSpare = (id) => {
                     <div class="table--items spares__list__item" v-for="spare in spares" :key="spare.id">
                         <!-- <p>{{ spare.device.service.spare_type.name }}</p> -->
                         <img :src="ourSpareImage(spare.image)" />
-                        <p>{{ spare.service_id }}</p>
-                        <p>{{ spare.spare_type_id }}</p>
+                        <p>{{ spare.service.device.user.name }} -> {{ spare.service.device.brand }} {{ spare.service.device.model_name }}<br>-> {{ spare.service.description }}</p>
+                        <p>{{ spare.spare_type.dealer }}<br>{{ spare.spare_type.type }}<br>{{ spare.spare_type.brand }}</p>
                         <p>{{ spare.description }}</p>
                         <p>{{ spare.purchase_date }}</p>
                         <p>{{ spare.reception_date }}</p>

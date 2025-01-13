@@ -133,12 +133,12 @@ const deleteService = (id) => {
 
                     <div class="table--heading mt-2 services__list__heading " style="padding-top: 20px;background:#FFF">
                         <p class="table--heading--col1">Utilisateur</p>
-                        <p class="table--heading--col2">Id appareil</p>
+                        <p class="table--heading--col2">Appareil</p>
                         <p class="table--heading--col3">Marque</p>
                         <p class="table--heading--col4">Nom Modèle</p>
                         <p class="table--heading--col5">No Modèle</p>
                         <p class="table--heading--col6">Description de la prestation</p>
-                        <p class="table--heading--col7">Price</p>
+                        <p class="table--heading--col7">Prix</p>
                         <p class="table--heading--col8">Actions</p>
                     </div>
 

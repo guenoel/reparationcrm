@@ -183,7 +183,7 @@ const updateSpare = (values, actions) => {
                 <div class="spares__create__cardWrapper mt-2">
                     <div class="spares__create__main">
                         <div class="spares__create__main--addInfo card py-2 px-2 bg-white">
-                            <p class="mb-1">Service ID</p>
+                            <p class="mb-1">Service</p>
                             <select v-model="form.service_id" class="input" id="service_id" name="service_id">
                                 <option v-for="service in page.props.services" :key="service.id" :value="service.id">
                                     {{ service.device.user.name }} -> {{ service.device.brand }} {{ service.device.model_name }} -> {{ service.description }}
@@ -191,7 +191,7 @@ const updateSpare = (values, actions) => {
                             </select>
                             <small style="color:red" v-if="errors.service_id">{{ errors.service_id }}</small>
 
-                            <p class="mb-1">Pièce type ID</p>
+                            <p class="mb-1">Pièce type</p>
                             <select v-model="form.spare_type_id" class="input" id="spare_type_id" name="spare_type_id">
                                 <option v-for="spare_type in page.props.spare_types" :key="spare_type.id" :value="spare_type.id">{{ spare_type.dealer }} {{ spare_type.type }}</option>
                             </select>

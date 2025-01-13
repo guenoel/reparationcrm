@@ -40,10 +40,11 @@ class SpareController extends Controller
             }
             // Vérifier si le paramètre `all` est présent pour la création
             if ($request->has('all') && $request->all == true) {
-                $spares = $spares->whereHas('service')->with('service')->latest()->get();
+                $spares = $spares->whereHas('service')->with('service', 'service.device', 'service.device.user', 'spareType')->latest()->get();
             } else {
                 // ... sinon c'est avec pagination pour l'index.
-            $spares = $spares->whereHas('service')->with('service')->latest()->paginate(5);
+            $spares = $spares->whereHas('service')->with('service', 'service.device', 'service.device.user', 'spareType')->latest()->paginate(5);
+            Log::info('Spares:', $spares->toArray());
             }
 
             return response()->json([

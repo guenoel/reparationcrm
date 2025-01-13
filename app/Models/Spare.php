@@ -16,7 +16,7 @@ class Spare extends Authenticatable
     {
         return $this->belongsTo(Service::class);
     }
-    public function spare_type()
+    public function spareType()
     {
         return $this->belongsTo(SpareType::class);
     }

@@ -118,7 +118,7 @@ const deleteTask = (id) => {
 
                     <div class="table--heading mt-2 tasks__list__heading " style="padding-top: 20px;background:#FFF">
                         <p class="table--heading--col1">Image</p>
-                        <p class="table--heading--col2">Service ID</p>
+                        <p class="table--heading--col2">Prestation</p>
                         <p class="table--heading--col3">Début</p>
                         <p class="table--heading--col4">Fin</p>
                         <p class="table--heading--col5">Description</p>
@@ -129,7 +129,7 @@ const deleteTask = (id) => {
                     <div class="table--items tasks__list__item" v-for="task in tasks" :key="task.id">
                         <!-- <p>{{ task.device.service.user.name }}</p> -->
                         <img :src="ourTaskImage(task.image)" />
-                        <p>{{ task.service_id }}</p>
+                        <p>{{ task.service.device.user.name }} -> {{ task.service.device.brand }} {{ task.service.device.model_name }}<br>-> {{ task.service.description }}</p>
                         <p>{{ task.start }}</p>
                         <p>{{ task.end }}</p>
                         <p>{{ task.description }}</p>

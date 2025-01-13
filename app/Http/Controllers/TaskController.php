@@ -42,10 +42,10 @@ class TaskController extends Controller
             }
             // Vérifier si le paramètre `all` est présent pour la création
             if ($request->has('all') && $request->all == true) {
-                $tasks = $tasks->whereHas('service')->with(['service', 'service.device'])->latest()->get();
+                $tasks = $tasks->whereHas('service')->with(['service', 'service.device', 'service.device.user'])->latest()->get();
             } else {
             // ... sinon c'est avec pagination pour l'index.
-            $tasks = $tasks->whereHas('service')->with(['service', 'service.device'])->latest()->paginate(5);
+            $tasks = $tasks->whereHas('service')->with(['service', 'service.device', 'service.device.user'])->latest()->paginate(5);
             }
 
             return response()->json([
