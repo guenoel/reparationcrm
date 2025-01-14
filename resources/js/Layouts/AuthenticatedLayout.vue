@@ -75,28 +75,28 @@ const confirmLogout = () => {
                                     :href="route('devices.index')"
                                     :active="route().current('devices.index')"
                                 >
-                                    Appareils en réparation
+                                    Appareils à réparer
                                 </ResponsiveNavLink>
                                 <ResponsiveNavLink
                                     v-if="userRole >= 0"
                                     :href="route('services.index')"
                                     :active="route().current('services.index')"
                                 >
-                                    Prestations
+                                    Prestations à réaliser
                                 </ResponsiveNavLink>
                                 <ResponsiveNavLink
                                     v-if="userRole >= 1"
                                     :href="route('tasks.index')"
                                     :active="route().current('tasks.index')"
                                 >
-                                    Tâches réalisées
+                                    Tâches effectuées
                                 </ResponsiveNavLink>
                                 <ResponsiveNavLink
                                     v-if="userRole >= 1"
                                     :href="route('spares.index')"
                                     :active="route().current('spares.index')"
                                 >
-                                    Pièces
+                                    Pièces à monter
                                 </ResponsiveNavLink>
                                 <ResponsiveNavLink
                                     v-if="userRole >= 2"
