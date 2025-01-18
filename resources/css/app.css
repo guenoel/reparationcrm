@@ -87,11 +87,12 @@ main h1 ~ p {
 
 .legend--services span {
     cursor: pointer;
-    padding: 0.5rem 1rem;
+    padding: 0.1rem;
+    padding-left: 1rem;
     border-radius: 4px;
     display: inline-block;
-    margin: 0.2rem;
-    text-align: center;
+    margin: 0.1rem;
+    text-align: left;
     transition: all 0.2s ease-in-out;
 }
 
