@@ -36,22 +36,27 @@ class DeviceController extends Controller
             }
             if($request->searchQuery != ''){
                 $searchTerm = "%{$request->searchQuery}%";
-            $devices = $devices->where(function ($query) use ($searchTerm) {
-                $query->whereHas('user', function ($userQuery) use ($searchTerm) {
-                    $userQuery->where('name', 'like', $searchTerm) // Search by name
-                                ->orWhere('phone', 'like', $searchTerm);
-                })
-                        ->orWhere('brand', 'like', $searchTerm)
-                        ->orWhere('model_name', 'like', $searchTerm)
-                        ->orWhere('description', 'like', $searchTerm);
-            });
+                $devices = $devices->where(function ($query) use ($searchTerm) {
+                    $query->whereHas('user', function ($userQuery) use ($searchTerm) {
+                        $userQuery->where('name', 'like', $searchTerm) // Search by name
+                                    ->orWhere('phone', 'like', $searchTerm);
+                    })
+                            ->orWhere('brand', 'like', $searchTerm)
+                            ->orWhere('model_name', 'like', $searchTerm)
+                            ->orWhere('description', 'like', $searchTerm);
+                });
             }
             // Vérifier si le paramètre `all` est présent
             if ($request->has('all') && $request->all == true) {
-                $devices = $devices->with('user')->latest()->get();
+                $devices = $devices->with('user', 'services')->latest()->get();
             } else {
-            $devices = $devices->with('user')->latest()->paginate(5);
+            $devices = $devices->with('user', 'services')->latest()->paginate(5);
             }
+            // Ajouter le champ `has_service` à chaque appareil
+            $devices->transform(function ($device) {
+                $device->has_service = $device->services->isNotEmpty(); // Booléen: associé à un service ?
+                return $device;
+            });
             return response()->json([
                 'devices' => $devices
             ], 200);
@@ -144,6 +149,7 @@ class DeviceController extends Controller
         $device->serial_number = $request->serial_number;
         $device->imei = $request->imei;
         $device->description = $request->description;
+        $device->returned = $request->returned;
         $device->save();
     }
 
@@ -203,6 +209,7 @@ class DeviceController extends Controller
         $device->serial_number = $request->serial_number;
         $device->imei = $request->imei;
         $device->description = $request->description;
+        $device->returned = $request->returned;
         $device->save();
 
         return response()->json(['message' => 'Device updated successfully']);

@@ -2,7 +2,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import { Inertia } from '@inertiajs/inertia';
-import { reactive, ref, onMounted } from 'vue';
+import { reactive, ref, onMounted, computed, watch } from 'vue';
 import { usePage } from '@inertiajs/vue3';
 //import { useRouter, useRoute } from 'vue-router';
 import axios from 'axios';
@@ -18,7 +18,8 @@ const form = reactive({
     model_number: '',
     serial_number: '',
     imei: '',
-    description: ''
+    description: '',
+    returned: ''
 });
 
 //const router = useRouter()
@@ -30,6 +31,7 @@ const page = usePage();
 const editMode = ref(false);
 let errors = ref([]);
 const hideUserDropdown = ref(false); // To control dropdown visibility
+const searchQuery = ref(''); // Stocke le texte de recherche
 
 onMounted(() => {
     // Check user role and set dropdown visibility
@@ -45,6 +47,22 @@ onMounted(() => {
         getDevice();
     } else {
         getUsers();
+    }
+});
+
+// Propriété calculée pour filtrer les utilisateurs
+const filteredUsers = computed(() => {
+    if (!searchQuery.value.trim()) {
+        return page.props.users; // Retourne tous les utilisateurs si la recherche est vide
+    }
+    return page.props.users.filter((user) =>
+        user.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+    );
+});
+
+watch(filteredUsers, (newUsers) => {
+    if (newUsers.length > 0) {
+        form.user_id = newUsers[0].id; // Prend le premier utilisateur filtré
     }
 });
 
@@ -82,6 +100,8 @@ const getDevice = async () => {
                 form.serial_number = response.data.device.serial_number;
                 form.imei = response.data.device.imei;
                 form.description = response.data.device.description;
+                form.returned = response.data.device.returned;
+                form.has_service = Boolean(response.data.device.has_service);
             }
 
     } catch (error) {
@@ -183,29 +203,65 @@ const updateDevice = (values, actions) => {
                         <div class="devices__create__main--addInfo card py-2 px-2 bg-white">
                             <div v-if="!hideUserDropdown">
                                 <p class="mb-1">Utilisateur</p>
+                                <input
+                                    type="text"
+                                    v-model="searchQuery"
+                                    placeholder="Rechercher un utilisateur..."
+                                    class="input mb-2"
+                                />
                                 <select v-model="form.user_id" class="input" id="user_id" name="user_id">
-                                    <option v-for="user in page.props.users" :key="user.id" :value="user.id">
+                                    <!-- <option v-for="user in page.props.users" :key="user.id" :value="user.id">
+                                        {{ user.name }}
+                                    </option> -->
+                                    <option
+                                        v-for="user in filteredUsers"
+                                        :key="user.id"
+                                        :value="user.id"
+                                    >
                                         {{ user.name }}
                                     </option>
                                 </select>
                                 <small style="color:red" v-if="errors.user_id">{{ errors.user_id }}</small>
                             </div>
-                            <p class="mb-1">Marque</p>
-                            <input type="text" class="input" id="brand" name="brand" v-model="form.brand">
-                            <small style="color:red" v-if="errors.brand">{{ errors.brand }}</small>
-                            <p class="mb-1">Modèle</p>
-                            <input type="text" class="input" id="model_name" name="model_name" v-model="form.model_name">
-                            <small style="color:red" v-if="errors.model_name">{{ errors.model_name }}</small>
-                            <p class="mb-1">No de modèle</p>
-                            <input type="text" class="input" id="model_number" name="model_number" v-model="form.model_number">
-                            <p class="mb-1">No de série</p>
-                            <input type="text" class="input" id="serial_number" name="serial_number" v-model="form.serial_number">
-                            <p class="mb-1">imei</p>
-                            <input type="text" class="input" id="imei" name="imei" v-model="form.imei">
-                            <p class="my-1">Description (optional)</p>
-                            <textarea cols="10" rows="5" class="textarea" id="description" name="description" v-model="form.description"></textarea>
-                            <small style="color:red" v-if="errors.description">{{ errors.description }}</small>
-
+                            <!-- coté client, si pas de services associé -->
+                            <div v-if="!hideUserDropdown || !editMode || (hideUserDropdown && editMode && !form.has_service)">
+                                <p class="mb-1">Marque</p>
+                                <input type="text" class="input" id="brand" name="brand" v-model="form.brand">
+                                <small style="color:red" v-if="errors.brand">{{ errors.brand }}</small>
+                                <p class="mb-1">Modèle</p>
+                                <input type="text" class="input" id="model_name" name="model_name" v-model="form.model_name">
+                                <small style="color:red" v-if="errors.model_name">{{ errors.model_name }}</small>
+                                <p class="mb-1">No de modèle</p>
+                                <input type="text" class="input" id="model_number" name="model_number" v-model="form.model_number">
+                                <p class="mb-1">No de série</p>
+                                <input type="text" class="input" id="serial_number" name="serial_number" v-model="form.serial_number">
+                                <p class="mb-1">imei</p>
+                                <input type="text" class="input" id="imei" name="imei" v-model="form.imei">
+                                <p class="my-1">Description (optional)</p>
+                                <textarea cols="10" rows="5" class="textarea" id="description" name="description" v-model="form.description"></textarea>
+                                <small style="color:red" v-if="errors.description">{{ errors.description }}</small>
+                            </div>
+                            <div v-if="hideUserDropdown && editMode && form.has_service">
+                                <p class="mb-1">Marque: {{ form.brand }}</p>
+                                <p class="mb-1">Nom de modèle: {{ form.model_name }}</p>
+                                <p class="mb-1">Numéro de modèle: {{ form.model_number }}</p>
+                                <p class="mb-1">Numéro de série: {{ form.serial_number }}</p>
+                                <p class="mb-1">imei: {{ form.imei }}</p>
+                                <p class="mb-1">Description: {{ form.description }}</p>
+                            </div>
+                            <div v-if="!hideUserDropdown">
+                                <p class="mb-1">Restitué au client ?</p>
+                                <select v-model="form.returned" class="input" id="returned" name="returned">
+                                    <option value="0">Non</option>
+                                    <option value="1">Oui</option>
+                                </select>
+                            </div>
+                            <div v-if="hideUserDropdown && form.returned == 0 && editMode">
+                                <p>Appareil non restitué</p>
+                            </div>
+                            <div v-if="hideUserDropdown && form.returned == 1 && editMode">
+                                <p>Appareil restitué</p>
+                            </div>
                             <div class="devices__create__main--media--images mt-2">
                                 <ul class="devices__create__main--media--images--list list-unstyled">
                                     <li class="devices__create__main--media--images--item">

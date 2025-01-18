@@ -2,7 +2,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import { Inertia } from '@inertiajs/inertia';
-import { reactive, ref, onMounted } from 'vue';
+import { reactive, ref, onMounted, computed, watch } from 'vue';
 import { usePage } from '@inertiajs/vue3';
 //import { useRouter, useRoute } from 'vue-router';
 import axios from 'axios';
@@ -13,8 +13,12 @@ const serviceId = ref();
 const form = reactive({
     device_id: '',
     description: '',
+    accepted: false,
+    deposit: null,
+    deposit_paid: false,
     price: null,
-    accepted: false
+    price_paid: false,
+    done: false
 });
 
 //const router = useRouter()
@@ -24,15 +28,19 @@ const form = reactive({
 
 const page = usePage();
 const editMode = ref(false);
+//const createMode = ref(false);
 let errors = ref([]);
-const hideUserDropdown = ref(false); // To control dropdown visibility
+const customerView = ref(false); // To control dropdown visibility
 //const devices = ref([]);
+const deviceInfo = ref(null);
+const devicesDropdown = ref([]);
+const searchQuery = ref(''); // Stocke le texte de recherche
 
 onMounted(() => {
     // Check user role and set dropdown visibility
     const authUser = page.props.auth.user;
     if (authUser && authUser.role === 0) {
-        hideUserDropdown.value = true;
+        customerView.value = true;
     }
     // Check if there's a service ID to determine edit mode
     if (page.props.route && page.props.route.name === 'services.edit') {
@@ -40,20 +48,56 @@ onMounted(() => {
         serviceId.value = page.props.route.params.id;
         getService();
     } else {
+        // if (page.props.route && page.props.route.name === 'services.create') {
+        //     createMode.value = true;
+        // } else {
         getDevices();
+        // }
+    }
+    console.log("Edit Mode:", editMode.value);
+});
+
+// Filtrer les appareils avec `user.name`, `brand`, et `model_name`
+const filteredDevices = computed(() => {
+    if (!searchQuery.value.trim()) {
+        return devicesDropdown.value; // Retourne tous les appareils si la recherche est vide
+    }
+
+    const searchLower = searchQuery.value.toLowerCase();
+
+    // Convertir l'objet en tableau, appliquer le filtre, puis le reconvertir en objet
+    return Object.fromEntries(
+        Object.entries(devicesDropdown.value).filter(([id, label]) => {
+            return label.toLowerCase().includes(searchLower);
+        })
+    );
+});
+
+watch(filteredDevices, (newDevices) => {
+    if (Object.keys(newDevices).length > 0) {
+        form.device_id = Object.keys(newDevices)[0]; // Prend le premier appareil filtré
     }
 });
 
 const getDevices = async () => {
+        
+    const params = new URLSearchParams(window.location.search);
+    const deviceId = params.get('device_id');
+
     try {
-        let response = await axios.get('/api/devices?all=true');
-        //response: liste des appareils avec tous les champs non concaténés
-        console.log("Devices Response:", response.data.devices);
-        page.props.devices = response.data.devices;
-        const params = new URLSearchParams(window.location.search);
-        form.device_id = params.get('device_id'); // Preselect the device ID
+        const response = await axios.get(`/api/services/create${deviceId ? `?device_id=${deviceId}` : ''}`);
+        
+        if (response.data.device) {
+            deviceInfo.value = response.data.device; // Appareil spécifique
+            console.log("Device Info:", deviceInfo.value);
+        }
+
+        if (response.data.devices) {
+            devicesDropdown.value = response.data.devices; // Liste dropdown
+            console.log("Devices Dropdown:", devicesDropdown.value);
+        }
     } catch (error) {
-        console.error("Error fetching devices:", error);
+        console.error("Error fetching data:", error);
     }
 };
 
@@ -72,9 +116,15 @@ const getService = async () => {
 
             if (response.data.service) {
                 form.device_id = response.data.service.device_id;
+                form.device = response.data.service.device;
                 form.description = response.data.service.description;
+                form.accepted = Boolean(response.data.service.accepted);
+                form.deposit = response.data.service.deposit;
+                form.deposit_paid = Boolean(response.data.service.deposit_paid);
                 form.price = response.data.service.price;
-                form.accepted = response.data.service.accepted;
+                form.price_paid = Boolean(response.data.service.price_paid);
+                form.done = Boolean(response.data.service.done);
+                form.returned = Boolean(response.data.service.device.returned);
             }
 
         } catch (error) {
@@ -147,39 +197,149 @@ const updateService = (values, actions) => {
                 <div class="services__create__cardWrapper mt-2">
                     <div class="services__create__main">
                         <div class="services__create__main--addInfo card py-2 px-2 bg-white">
-                            <p class="mb-1">Appareil</p>
-                            <select v-if="editMode" v-model="form.device_id" class="input" id="device_id" name="device_id">
-                                <option v-for="device in page.props.devices" :key="device.id" :value="device.id">
-                                    {{ device.label }}
-                                </option>
-                            </select>
-                            <select v-else v-model="form.device_id" class="input" id="device_id" name="device_id">
-                                <option v-for="device in page.props.devices" :key="device.id" :value="device.id">
-                                    {{ device.user.name }} -> {{ device.brand }} {{ device.model_name }}
-                                </option>
-                            </select>
-                            <small style="color:red" v-if="errors.device_id">{{ errors.device_id }}</small>
-                            <p class="my-1">Description du service demandé</p>
-                            <textarea cols="10" rows="5" class="textarea" id="description" name="description" v-model="form.description"></textarea>
-                            <small style="color:red" v-if="errors.description">{{ errors.description }}</small>
-                            <div v-if="!hideUserDropdown">
+                            <p class="mb-1">Appareil:</p>
+                            <!-- édition admin -->
+                            <div v-if="!customerView && editMode" class="device-info">
+                                <p class="mb-1">
+                                    {{ form.device?.user?.name }} -> {{ form.device?.brand }} {{ form.device?.model_name }}
+                                </p>
+                            </div>
+                            <!-- édition user -->
+                            <div v-if="customerView && editMode" class="device-info">
+                                <p class="mb-1">
+                                    {{ form.device?.brand }} {{ form.device?.model_name }}
+                                </p>
+                            </div>
+                            <!-- création pré-select admin -->
+                            <div v-if="!customerView && deviceInfo" class="device-info">
+                                <p class="mb-1">
+                                    {{ deviceInfo.user.name }} -> {{ deviceInfo.brand }} {{ deviceInfo.model_name }}
+                                </p>
+                            </div>
+                            <!-- création pré-select user -->
+                            <div v-if="customerView && deviceInfo" class="device-info">
+                                <p class="mb-1">
+                                    {{ deviceInfo.brand }} {{ deviceInfo.model_name }}
+                                </p>
+                            </div>
+                            <!-- création -->
+                            <div v-if="!editMode && !deviceInfo">
+                                <input
+                                    type="text"
+                                    v-model="searchQuery"
+                                    placeholder="Rechercher par utilisateur, marque ou modèle..."
+                                    class="input mb-2"
+                                />
+
+                                <select v-model="form.device_id" class="input">
+                                    <option
+                                        v-for="[id, label] in Object.entries(filteredDevices)"
+                                        :key="id"
+                                        :value="id"
+                                    >
+                                        {{ label }}
+                                    </option>
+                                </select>
+
+                                <small style="color:red" v-if="errors.device_id">{{ errors.device_id }}</small>
+                            </div>
+                            
+                            <!-- Ne s'affiche pas pour le client si le prix est fixé -->
+                            <div v-if="!(customerView && form.price != null)">
+                                <p class="my-1">Description du service demandé:</p>
+                                <textarea cols="10" rows="5" class="textarea" id="description" name="description" v-model="form.description"></textarea>
+                                <small style="color:red" v-if="errors.description">{{ errors.description }}</small>
+                            </div>
+                            <!-- S'affiche pour le client si le prix est fixé -->
+                            <div v-if="customerView && form.price != null">
+                                <p class="mb-1">
+                                    Service demandé:<br>{{ form.description }}
+                                </p>
+                            </div>
+                            <!-- Vue coté boutique -->
+                            <div v-if="!customerView && form.price_paid == false">
+                                <p class="mb-1">Accompte</p>
+                                <input type="text" class="input" id="deposit" name="deposit" v-model="form.deposit">
+                                <small style="color:red" v-if="errors.price">{{ errors.deposit }}</small>
+                            </div>
+                            <!-- Vue coté client -->
+                            <div v-if="customerView && editMode && form.price_paid == false">
+                                <p class="my-1">Accompte: {{ form.deposit }}</p>
+                            </div>
+                            <!-- Vue coté boutique -->
+                            <div v-if="!customerView && form.price != null && form.price_paid == false">
+                                <p class="mb-1">
+                                <input type="checkbox" id="deposit_paid" name="deposit_paid" v-model="form.deposit_paid">
+                                Accompte payé ?</p>
+                            </div>
+                            
+                            <!-- Vue coté boutique -->
+                            <div v-if="!customerView">
                                 <p class="mb-1">Prix</p>
                                 <input type="text" class="input" id="price" name="price" v-model="form.price">
                                 <small style="color:red" v-if="errors.price">{{ errors.price }}</small>
                             </div>
-                            <div v-if="hideUserDropdown && editMode && form.price != null">
+                            <!-- Vue coté client -->
+                            <div v-if="customerView && editMode && form.price != null">
                                 <p class="my-1">Tarif: {{ form.price }}</p>
                             </div>
+                            <!-- Vue coté boutique et client-->
                             <div v-if="editMode && form.price == null">
                                 <p class="mb-1">En attente d'un tarif</p>
                             </div>
-                            <div v-if="hideUserDropdown && editMode && form.accepted == false && form.price != null">
+                            <!-- Vue coté boutique -->
+                            <div v-if="!customerView && form.price != null">
+                                <p class="mb-1">
+                                <input type="checkbox" id="accepted" name="accepted" v-model="form.accepted">
+                                Devis accepté ?</p>
+                            </div>
+                            
+                            <!-- Vue coté client -->
+                            <div v-if="customerView && editMode && form.accepted == false && form.price != null">
                                 <p class="mb-1">
                                 <input type="checkbox" id="accepted" name="accepted" v-model="form.accepted">
                                 Cochez la case pour accepter le devis</p>
                             </div>
-                            <div v-if="hideUserDropdown && editMode && form.accepted == true">
+                            <div v-if="customerView && editMode && form.accepted == true">
                                 <p class="my-1">Devis accepté</p>
+                            </div>
+                            <!-- Vue coté boutique -->
+                            <div v-if="!customerView && form.price != null">
+                                <p class="mb-1">
+                                <input type="checkbox" id="done" name="done" v-model="form.done">
+                                Service rendu ?</p>
+                            </div>
+                            <div v-if="form.done == true">
+                                <p class="my-1">Votre appareil est prêt !</p>
+                            </div>
+                            <div v-if="form.done == false && editMode">
+                                <p class="my-1">Service en cours...</p>
+                            </div>
+                            <!-- Vue coté boutique -->
+                            <div v-if="!customerView && form.price != null">
+                                <p class="mb-1">
+                                <input type="checkbox" id="price_paid" name="price_paid" v-model="form.price_paid">
+                                Service payé ?</p>
+                            </div>
+                            <!-- Vue coté client -->
+                            <div v-if="form.price_paid == true">
+                                <p class="my-1">Payé !</p>
+                            </div>
+                            <div v-if="form.price_paid == false && form.done == true">
+                                <p class="my-1">En attente de paiement</p>
+                            </div>
+                            <!-- Vue coté boutique -->
+                            <div v-if="!customerView">
+                                <p class="mb-1">
+                                <input type="checkbox" id="returned" name="returned" v-model="form.returned">
+                                Appareil restitué ?</p>
+                            </div>
+                            <!-- Vue coté client -->
+                            <div v-if="form.returned == true">
+                                <p class="my-1">Appareil restitué</p>
+                            </div>
+                            <div v-if="form.returned == false">
+                                <p class="my-1">Appareil en magasin</p>
                             </div>
                         </div>
                     </div>

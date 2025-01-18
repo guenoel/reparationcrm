@@ -40,6 +40,39 @@ watch(searchQuery, () => {
 //    Inertia.visit('/services/create')
 //}
 
+// Déterminer la classe de la ligne en fonction des conditions
+const getRowClass = (service) => {
+    if (!service.price_paid && !service.accepted && service.device.returned) {
+        return 'bg-gray-200'; // Gris clair
+    }
+    if (!service.price_paid && !service.accepted && !service.done) {
+        return 'bg-orange-300'; // Orange
+    }
+    if (service.price_paid && !service.accepted && !service.done) {
+        return 'bg-orange-500'; // Orange foncé
+    }
+    if (!service.price_paid && service.accepted && !service.done) {
+        return 'bg-beige-300'; // beige clair
+    }
+    if (!service.price_paid && service.accepted && service.done && !service.device.returned) {
+        return 'bg-beige-500'; // beige foncé
+    }
+    if (service.price_paid && service.accepted && !service.done && !service.device.returned) {
+        return 'bg-green-300'; // Vert clair
+    }
+    if (service.price_paid && service.accepted && service.done && !service.device.returned) {
+        return 'bg-green-700'; // Vert foncé
+    }
+    if (service.price_paid && service.accepted && service.done && service.device.returned) {
+        return 'bg-gray-500'; // Gris foncé
+    }
+    if (!service.price_paid && service.accepted && service.done && service.device.returned) {
+        return 'bg-red-500'; // Rouge
+    }
+    
+    return ''; // Classe par défaut
+};
+
 
 const getServices = async () => {
     try {
@@ -130,7 +163,21 @@ const deleteService = (id) => {
                         <input class="search-input" type="text" name="search" placeholder="Recherche prestation..."
                             v-model="searchQuery" />
                     </div>
-
+                    <div class="legend--title">
+                        <p>Légende:</p>
+                    </div>
+                    <div class="legend--services">
+                        <span class="bg-orange-300">Non payé, non accepté, non terminé, non rendu</span>
+                        <span class="bg-orange-500">Payé, non accepté, non terminé, non rendu</span>
+                        <span class="bg-gray-200">Non payé, non accepté, non terminé, rendu</span>
+                        <span class="bg-beige-300">Non Payé, accepté, non terminé, non rendu</span>
+                        <span class="bg-beige-500">Non payé, accepté, terminé, non rendu</span>
+                        <span class="bg-gray-500">Payé, accepté, terminé, rendu</span>
+                        <span class="bg-green-300">Payé, accepté, non terminé, non rendu</span>
+                        <span class="bg-green-700">Payé, accepté, terminé, non rendu</span>
+                        <span class="bg-red-500">Non payé, accepté, terminé, rendu</span>
+                        
+                    </div>
                     <div class="table--heading mt-2 services__list__heading " style="padding-top: 20px;background:#FFF">
                         <p class="table--heading--col1">Utilisateur</p>
                         <p class="table--heading--col2">Appareil</p>
@@ -143,7 +190,7 @@ const deleteService = (id) => {
                     </div>
 
                     <!-- device 1 -->
-                    <div class="table--items services__list__item" v-for="service in services" :key="service.id">
+                    <div class="table--items services__list__item" v-for="service in services" :key="service.id" :class="getRowClass(service)">
                         <p>{{ service.device.user.name }}</p>
                         <p>{{ service.device_id }}</p>
                         <p>{{ service.device.brand }}</p>
@@ -155,7 +202,7 @@ const deleteService = (id) => {
                             <button class="btn-icon btn-icon-success" @click="onEdit(service.id)">
                                 <i class="fas fa-pencil-alt"></i>
                             </button>
-                            <button class="btn-icon btn-icon-danger" @click="deleteService(service.id)">
+                            <button v-if="!hideUserDropdown || !service.price" class="btn-icon btn-icon-danger" @click="deleteService(service.id)">
                                 <i class="far fa-trash-alt"></i>
                             </button>
                         </div>

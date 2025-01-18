@@ -32,6 +32,13 @@ watch(searchQuery, () => {
 //    Inertia.visit('/devices/create')
 //}
 
+const getRowClass = (device) => {
+    if (!device.returned) {
+        return 'bg-green-300'; // Vert clair
+    }
+    return ''; // Classe par défaut
+};
+
 const ourDeviceImage = (img) => {
     return "/upload/" + img;
 };
@@ -120,7 +127,13 @@ const deleteDevice = (id) => {
                         <input class="search-input" type="text" name="search" placeholder="Recherche d'appareil..."
                             v-model="searchQuery" />
                     </div>
-
+                    <div class="legend--title">
+                        <p>Légende:</p>
+                    </div>
+                    <div class="legend--devices">
+                        <span class="bg-gray-200">Appareil rendu</span>
+                        <span class="bg-green-300">Appareil non rendu</span>
+                    </div>
                     <div class="table--heading mt-2 devices__list__heading " style="padding-top: 20px;background:#FFF">
                         <p class="table--heading--col1">Image</p>
                         <p class="table--heading--col2">Client</p>
@@ -131,7 +144,7 @@ const deleteDevice = (id) => {
                     </div>
 
                     <!-- device 1 -->
-                    <div class="table--items devices__list__item" v-for="device in devices" :key="device.id">
+                    <div class="table--items devices__list__item" v-for="device in devices" :key="device.id" :class="getRowClass(device)">
                         <img :src="ourDeviceImage(device.image)" />
                         <p>{{ device.user.name }}</p>
                         <p>{{ device.brand }}</p>
@@ -141,7 +154,7 @@ const deleteDevice = (id) => {
                             <button class="btn-icon btn-icon-success" @click="onEdit(device.id)">
                                 <i class="fas fa-pencil-alt"></i>
                             </button>
-                            <button class="btn-icon btn-icon-danger" @click="deleteDevice(device.id)">
+                            <button v-if="!device.has_service" class="btn-icon btn-icon-danger" @click="deleteDevice(device.id)">
                                 <i class="far fa-trash-alt"></i>
                             </button>
                         </div>

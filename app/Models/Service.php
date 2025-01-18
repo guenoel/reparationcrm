@@ -10,7 +10,7 @@ use Laravel\Sanctum\HasApiTokens;
 class Service extends Authenticatable
 {
     use HasFactory, HasApiTokens;
-    protected $fillable = ['device_id', 'description', 'price', 'accepted', 'created_at', 'updated_at'];
+    protected $fillable = ['device_id', 'description', 'accepted','deposit', 'deposit_paid', 'price', 'price_paid', 'done', 'created_at', 'updated_at'];
 
     public function device()
     {

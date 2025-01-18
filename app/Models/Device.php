@@ -10,7 +10,7 @@ use Laravel\Sanctum\HasApiTokens;
 class Device extends Authenticatable
 {
     use HasFactory, HasApiTokens;
-    protected $fillable = ['image', 'user_id', 'brand', 'model_name', 'model_number', 'serial_number', 'imei', 'description', 'created_at', 'updated_at'];
+    protected $fillable = ['image', 'user_id', 'brand', 'model_name', 'model_number', 'serial_number', 'imei', 'description', 'returned', 'created_at', 'updated_at'];
 
     public function user()
     {
@@ -20,6 +20,16 @@ class Device extends Authenticatable
     public function services()
     {
         return $this->hasMany(Service::class);
+    }
+    public function hasService(): bool
+    {
+        return $this->services()->exists(); // Vérifie si des services existent pour ce device
+    }
+
+    protected $appends = ['has_service'];
+    public function getHasServiceAttribute(): bool
+    {
+        return $this->services()->exists();
     }
 
     public static function getDevicesForDropdown()

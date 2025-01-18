@@ -72,6 +72,47 @@ main h1 ~ p {
     padding-right: 20px;
 }
 
+.legend--title {
+    margin-top: 0.5rem;
+}
+
+.legend--services {
+    display: grid;
+    grid-template-rows: repeat(3, 1fr); /* Crée 3 lignes */
+    grid-template-columns: repeat(3, 1fr); /* 3 colonnes de taille égale */
+    grid-auto-flow: column; /* Remplit d'abord les colonnes verticalement */
+    margin-top: 0.5rem; /* Espacement au-dessus de la légende */
+    color:#000000;
+}
+
+.legend--devices {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr); /* 6 colonnes de taille égale */
+    grid-auto-flow: row; /* Remplit d'abord les lignes horizontalement */
+    margin-top: 0.5rem; /* Espacement au-dessus de la légende */
+    color:#000000;
+}
+
+.legend--services span {
+    display: block;
+    text-align: left; /* Centrer le texte */
+    padding-left: 1rem; /* Espacement à gauche */
+}
+
+.legend--devices span {
+    display: block;
+    text-align: left; /* Centrer le texte */
+    padding-left: 1rem; /* Espacement à gauche */
+}
+
+.input.mb-2 {
+    margin-bottom: 0.5rem;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%;
+}
+
 .table--heading {
     padding: 0 30px;
     gap: 10px;
@@ -79,7 +120,8 @@ main h1 ~ p {
     display: grid;
     -ms-grid-columns: (minmax(100px, 1fr))[auto-fit];
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-    color: #6a727a;
+    /* color: #6a727a; */
+    color: #000000;
     font-size: 14px;
     font-weight: 500;
     border-bottom: 1px solid #e0e0e0;
@@ -125,7 +167,8 @@ main h1 ~ p {
     align-items: center;
     border-bottom: 1px solid #e0e0e0;
     padding: 0.6rem 0;
-    color: #6a727a;
+    /* color: #6a727a; */
+    color: #000000;
     background-color: #f1f1f1;
 }
 
@@ -182,12 +225,14 @@ main h1 ~ p {
 }
 
 .btn-icon {
-    border: 1px solid #e0e0e0;
+    /* border: 1px solid #e0e0e0; */
+    border: 1px solid #000000;
     background: none;
     width: 35px;
     height: 35px;
     border-radius: 4px;
-    color: #6a727a;
+    /* color: #6a727a; */
+    color: #000000;
     cursor: pointer;
 }
 
@@ -201,6 +246,13 @@ main h1 ~ p {
         background: crimson;
         color: white;
     
+}
+
+.btn-secondary {
+    border: 1px solid #000000;
+    background: none;
+    border-radius: 4px;
+    color: #000000;
 }
 
 
@@ -324,6 +376,13 @@ main h1 ~ p {
     grid-gap: 20px;
 }
 
+.search-input {
+    padding: 9px 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    width: 100%;
+}
+
 .inputAdd {
     padding: 9px 15px;
     border-top: 1px solid #e0e0e0;
@@ -422,3 +481,39 @@ main h1 ~ p {
     cursor: pointer;
 }
 
+
+.bg-gray-200 {
+    background-color: #e5e7eb; /* Gris clair */
+}
+
+.bg-orange-300 {
+    background-color: #fdba74; /* Orange */
+}
+
+.bg-orange-500 {
+    background-color: #fb923c; /* Orange foncé */
+}
+
+.bg-beige-300 {
+    background-color: #fae9e9; /* beige */
+}
+
+.bg-beige-500 {
+    background-color: #d1a2a2; /* Marron */
+}
+
+.bg-green-300 {
+    background-color: #86efac; /* Vert clair */
+}
+
+.bg-green-700 {
+    background-color: #03b381; /* Vert foncé */
+}
+
+.bg-gray-500 {
+    background-color: #C0C0C0; /* Gris foncé */
+}
+
+.bg-red-500 {
+    background-color: #ff0000; /* Rouge */
+}

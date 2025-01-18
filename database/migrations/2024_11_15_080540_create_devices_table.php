@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string("serial_number");
             $table->string("imei");
             $table->text("description");
+            $table->boolean("returned")->default(false);
         });
     }
 

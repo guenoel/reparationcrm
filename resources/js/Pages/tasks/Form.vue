@@ -2,7 +2,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import { Inertia } from '@inertiajs/inertia';
-import { reactive, ref, onMounted } from 'vue';
+import { reactive, ref, onMounted, computed, watch } from 'vue';
 import { usePage } from '@inertiajs/vue3';
 //import { useRouter, useRoute } from 'vue-router';
 import axios from 'axios';
