@@ -85,18 +85,31 @@ main h1 ~ p {
     color:#000000;
 }
 
+.legend--services span {
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    display: inline-block;
+    margin: 0.2rem;
+    text-align: center;
+    transition: all 0.2s ease-in-out;
+}
+
+.legend--services span:hover {
+    transform: scale(1.05);
+}
+
+.legend--services span.active-filter {
+    outline: 2px solid #000; /* Indique le filtre actif */
+    font-weight: bold;
+}
+
 .legend--devices {
     display: grid;
     grid-template-columns: repeat(6, 1fr); /* 6 colonnes de taille égale */
     grid-auto-flow: row; /* Remplit d'abord les lignes horizontalement */
     margin-top: 0.5rem; /* Espacement au-dessus de la légende */
     color:#000000;
-}
-
-.legend--services span {
-    display: block;
-    text-align: left; /* Centrer le texte */
-    padding-left: 1rem; /* Espacement à gauche */
 }
 
 .legend--devices span {
@@ -503,7 +516,7 @@ main h1 ~ p {
 }
 
 .bg-green-300 {
-    background-color: #86efac; /* Vert clair */
+    background-color: #bbffd4; /* Vert clair */
 }
 
 .bg-green-700 {
