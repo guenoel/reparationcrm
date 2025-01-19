@@ -154,6 +154,8 @@ const createService = (values, actions) => {
         .catch((error) => {
             if (error.response && error.response.status === 422) {
                 errors.value = error.response.data.errors;
+            } else if (error.request) {
+                console.error("Erreur de réseau ou serveur injoignable :", error.request);
             } else {
                 console.error("Error creating service:", error);
             }
