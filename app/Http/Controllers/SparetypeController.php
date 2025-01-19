@@ -28,12 +28,12 @@ class SparetypeController extends Controller
                         ->orWhere('sell_price', 'like', $searchTerm);
             });
             }
-            // Vérifier si le paramètre `all` est présent pour la création
+            $perPage = $request->input('perPage', 10);
             if ($request->has('all') && $request->all == true) {
                 $spare_types = $spare_types->latest()->get();
             } else {
             // ... sinon c'est avec pagination pour l'index.
-            $spare_types = $spare_types->latest()->paginate(5);
+            $spare_types = $spare_types->latest()->paginate($perPage);
             }
             return response()->json([
                 'spare_types' => $spare_types

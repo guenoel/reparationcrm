@@ -40,12 +40,12 @@ class TaskController extends Controller
                         ->orWhere('description', 'like', $searchTerm);
             });
             }
-            // Vérifier si le paramètre `all` est présent pour la création
+            $perPage = $request->input('perPage', 10);
             if ($request->has('all') && $request->all == true) {
                 $tasks = $tasks->whereHas('service')->with(['service', 'service.device', 'service.device.user'])->latest()->get();
             } else {
             // ... sinon c'est avec pagination pour l'index.
-            $tasks = $tasks->whereHas('service')->with(['service', 'service.device', 'service.device.user', 'user'])->latest()->paginate(5);
+            $tasks = $tasks->whereHas('service')->with(['service', 'service.device', 'service.device.user', 'user'])->latest()->paginate($perPage);
             }
 
             return response()->json([

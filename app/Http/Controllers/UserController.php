@@ -35,12 +35,12 @@ class UserController extends Controller
                         ->orWhere('role', 'like', $searchTerm);
             });
             }
-            // Vérifier si le paramètre `all` est présent pour la création
+            $perPage = $request->input('perPage', 10);
             if ($request->has('all') && $request->all == true) {
                 $users = $users->latest()->get(); // Récupérer tous les utilisateurs
             } else {
             // ... sinon c'est avec pagination pour l'index.
-                $users = $users->latest()->paginate(5); // Pagination par défaut
+                $users = $users->latest()->paginate($perPage); // Pagination par défaut
             }
 
             return response()->json([

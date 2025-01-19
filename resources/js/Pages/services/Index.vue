@@ -19,9 +19,9 @@ const page = usePage();
 let services = ref([]);
 let links = ref([]);
 let searchQuery = ref('');
-const hideUserDropdown = ref(false); // To control dropdown visibility
+const hideUserDropdown = ref(false);
 const activeFilters = ref([]); // Correct : tableau vide
-
+const itemsPerPage = ref(10); // Valeur par défaut
 
 onMounted(async () => {
     // Check user role and set dropdown visibility
@@ -54,10 +54,10 @@ const getRowClass = (service) => {
         return 'bg-orange-500'; // Orange foncé
     }
     if (!service.price_paid && service.accepted && !service.done) {
-        return 'bg-beige-300'; // beige clair
+        return 'bg-blue-300'; // bleu clair
     }
     if (!service.price_paid && service.accepted && service.done && !service.device.returned) {
-        return 'bg-beige-500'; // beige foncé
+        return 'bg-blue-500'; // bleu moyen
     }
     if (service.price_paid && service.accepted && !service.done && !service.device.returned) {
         return 'bg-green-300'; // Vert clair
@@ -98,7 +98,7 @@ const toggleFilter = (filterClass) => {
 
 const getServices = async () => {
     try {
-        const response = await axios.get('/api/services?&searchQuery=' + searchQuery.value);
+        const response = await axios.get(`/api/services?searchQuery=${searchQuery.value}&perPage=${itemsPerPage.value}`);
         services.value = response.data.services.data;
         links.value = response.data.services.links;
     } catch (error) {
@@ -174,12 +174,11 @@ const deleteService = (id) => {
                         <div class="customers__titlebar--item">
                             <h1>Prestations</h1>
                         </div>
-                        <div class="customers__titlebar--item">
+                        <!-- <div class="customers__titlebar--item">
                             <Link href="/services/create" class="btn btn-secondary my-1">
                             Ajouter une prestation
                             </Link>
-                            <!-- <button @click="newDevice">Ajouter un appareil</button> -->
-                        </div>
+                        </div> -->
                     </div>
                     <div class="relative">
                         <input class="search-input" type="text" name="search" placeholder="Recherche prestation..."
@@ -211,16 +210,16 @@ const deleteService = (id) => {
                             Non payé, non accepté, non terminé, rendu
                         </span>
                         <span
-                            class="bg-beige-300"
-                            :class="{ 'active-filter': activeFilters.includes('bg-beige-300') }"
-                            @click="toggleFilter('bg-beige-300')"
+                            class="bg-blue-300"
+                            :class="{ 'active-filter': activeFilters.includes('bg-blue-300') }"
+                            @click="toggleFilter('bg-blue-300')"
                         >
                             Non Payé, accepté, non terminé, non rendu
                         </span>
                         <span
-                            class="bg-beige-500"
-                            :class="{ 'active-filter': activeFilters.includes('bg-beige-500') }"
-                            @click="toggleFilter('bg-beige-500')"
+                            class="bg-blue-500"
+                            :class="{ 'active-filter': activeFilters.includes('bg-blue-500') }"
+                            @click="toggleFilter('bg-blue-500')"
                         >
                             Non payé, accepté, terminé, non rendu
                         </span>
@@ -297,6 +296,19 @@ const deleteService = (id) => {
                             <a href="#" class="btn btn-secondary" v-for="(link, index) in links" :key="index" v-html="link.label"
                                 :class="{ active: link.active, disable: !link.url }" @click="changePage(link)"></a>
                         </ul>
+                        <select
+                            v-model="itemsPerPage"
+                            @change="getServices"
+                            class="select-pagination"
+                        >
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                            <option value="200">200</option>
+                            <option value="500">500</option>
+                            <option value="1000">1000</option>
+                        </select>
                     </div>
                 </div>
             </div>

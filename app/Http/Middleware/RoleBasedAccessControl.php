@@ -106,11 +106,11 @@ class RoleBasedAccessControl
             'dashboard_admin', 'users.index', 'spare_types.index', 'users.edit', 'spare_types.create', 'spare_types.edit' => $role >= 2,
 
             // Accessible to Workers and Admins (role >= 1)
-            'dashboard_worker', 'tasks.index', 'tasks.create', 'tasks.edit', 'spares.index', 'spares.create', 'spares.edit' => $role >= 1,
+            'dashboard_worker', 'tasks.create', 'tasks.edit', 'spares.create', 'spares.edit' => $role >= 1,
 
             // Accessible only to Customers (role >= 0)
             'dashboard', 'devices.index', 'devices.create', 'devices.edit',
-            'services.index', 'services.create', 'services.edit' => $role >= 0,
+            'services.index', 'services.create', 'services.edit', 'tasks.index', 'spares.index' => $role >= 0,
 
             // Default: Deny access
             default => false,

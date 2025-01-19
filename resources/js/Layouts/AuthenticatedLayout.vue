@@ -85,14 +85,14 @@ const confirmLogout = () => {
                                     Prestations à réaliser
                                 </ResponsiveNavLink>
                                 <ResponsiveNavLink
-                                    v-if="userRole >= 1"
+                                    v-if="userRole >= 0"
                                     :href="route('tasks.index')"
                                     :active="route().current('tasks.index')"
                                 >
                                     Tâches effectuées
                                 </ResponsiveNavLink>
                                 <ResponsiveNavLink
-                                    v-if="userRole >= 1"
+                                    v-if="userRole >= 0"
                                     :href="route('spares.index')"
                                     :active="route().current('spares.index')"
                                 >

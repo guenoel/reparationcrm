@@ -4,6 +4,7 @@ import { Head, Link } from '@inertiajs/vue3';
 import axios from 'axios';
 import { ref, onMounted, watch } from 'vue';
 import { Inertia } from '@inertiajs/inertia';
+import { usePage } from '@inertiajs/vue3';
 //import { useRoute, useRouter } from 'vue-router';
 
 //const router = useRouter()
@@ -15,11 +16,19 @@ import { Inertia } from '@inertiajs/inertia';
 //     }
 // });
 
+const page = usePage();
 let spares = ref([]);
 let links = ref([]);
 let searchQuery = ref('');
+const isCustomer = ref(false);
+const itemsPerPage = ref(10); // Valeur par défaut
 
 onMounted(async () => {
+    // Check user role and set dropdown visibility
+    const authUser = page.props.auth.user;
+    if (authUser && authUser.role === 0) {
+        isCustomer.value = true;
+    }
     getSpares();
 });
 
@@ -38,7 +47,7 @@ const ourSpareImage = (img) => {
 
 const getSpares = async () => {
     try {
-        const response = await axios.get('/api/spares?&searchQuery=' + searchQuery.value);
+        const response = await axios.get(`/api/spares?searchQuery=${searchQuery.value}&perPage=${itemsPerPage.value}`);
         spares.value = response.data.spares.data;
         links.value = response.data.spares.links;
     } catch (error) {
@@ -114,12 +123,11 @@ const formatTaskDate = (timestamp) => {
                         <div class="customers__titlebar--item">
                             <h1>Pièces</h1>
                         </div>
-                        <div class="customers__titlebar--item">
+                        <!-- <div class="customers__titlebar--item">
                             <Link href="/spares/create" class="btn btn-secondary my-1">
                             Ajouter une pièce
                             </Link>
-                            <!-- <button @click="newDevice">Ajouter un appareil</button> -->
-                        </div>
+                        </div> -->
                     </div>
                     <div class="relative">
                         <input class="search-input" type="text" name="search" placeholder="Recherche pièce..."
@@ -134,6 +142,7 @@ const formatTaskDate = (timestamp) => {
                         <p class="table--heading--col5">Date de commande</p>
                         <p class="table--heading--col6">Date de reception</p>
                         <p class="table--heading--col7">Date de retour</p>
+                        <p v-if="!isCustomer" class="table--heading--col8">Actions</p>
                     </div>
 
                     <!-- device 1 -->
@@ -155,7 +164,7 @@ const formatTaskDate = (timestamp) => {
                             {{ formatTaskDate(spare.return_date).date }}<br>
                             {{ formatTaskDate(spare.return_date).time }}
                         </p>
-                        <div>
+                        <div v-if="!isCustomer">
                             <button class="btn-icon btn-icon-success" @click="onEdit(spare.id)">
                                 <i class="fas fa-pencil-alt"></i>
                             </button>
@@ -169,6 +178,19 @@ const formatTaskDate = (timestamp) => {
                             <a href="#" class="btn btn-secondary" v-for="(link, index) in links" :key="index" v-html="link.label"
                                 :class="{ active: link.active, disable: !link.url }" @click="changePage(link)"></a>
                         </ul>
+                        <select
+                            v-model="itemsPerPage"
+                            @change="getSpares"
+                            class="select-pagination"
+                        >
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                            <option value="200">200</option>
+                            <option value="500">500</option>
+                            <option value="1000">1000</option>
+                        </select>
                     </div>
                 </div>
             </div>

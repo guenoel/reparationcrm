@@ -46,11 +46,12 @@ class DeviceController extends Controller
                             ->orWhere('description', 'like', $searchTerm);
                 });
             }
-            // Vérifier si le paramètre `all` est présent
+
+            $perPage = $request->input('perPage', 10);
             if ($request->has('all') && $request->all == true) {
                 $devices = $devices->with('user', 'services')->latest()->get();
             } else {
-            $devices = $devices->with('user', 'services')->latest()->paginate(5);
+                $devices = $devices->with('user', 'services')->latest()->paginate($perPage);
             }
             // Ajouter le champ `has_service` à chaque appareil
             $devices->transform(function ($device) {

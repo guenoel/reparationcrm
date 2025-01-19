@@ -114,9 +114,23 @@ main h1 ~ p {
 }
 
 .legend--devices span {
-    display: block;
-    text-align: left; /* Centrer le texte */
-    padding-left: 1rem; /* Espacement à gauche */
+    cursor: pointer;
+    padding: 0.1rem;
+    padding-left: 1rem;
+    border-radius: 4px;
+    display: inline-block;
+    margin: 0.1rem;
+    text-align: left;
+    transition: all 0.2s ease-in-out;
+}
+
+.legend--devices span:hover {
+    transform: scale(1.05);
+}
+
+.legend--devices span.active-filter {
+    outline: 2px solid #000; /* Indique le filtre actif */
+    font-weight: bold;
 }
 
 .input.mb-2 {
@@ -516,6 +530,18 @@ main h1 ~ p {
     background-color: #d1a2a2; /* Marron */
 }
 
+.bg-blue-300 {
+    background-color: #93c5fd; /* Bleu clair */
+}
+
+.bg-blue-500 {
+    background-color: #3b82f6; /* Bleu moyen */
+}
+
+.bg-blue-700 {
+    background-color: #1e3a8a; /* Bleu foncé */
+}
+
 .bg-green-300 {
     background-color: #bbffd4; /* Vert clair */
 }
@@ -530,4 +556,14 @@ main h1 ~ p {
 
 .bg-red-500 {
     background-color: #ff0000; /* Rouge */
+}
+
+.select-pagination {
+    float: right; /* Aligne la liste déroulante à droite */
+    margin-left: auto;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    width: 80px;
 }

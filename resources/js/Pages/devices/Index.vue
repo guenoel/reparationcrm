@@ -2,7 +2,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import axios from 'axios';
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, computed } from 'vue';
 import { Inertia } from '@inertiajs/inertia';
 //import { useRoute, useRouter } from 'vue-router';
 
@@ -18,6 +18,8 @@ import { Inertia } from '@inertiajs/inertia';
 let devices = ref([]);
 let links = ref([]);
 let searchQuery = ref('');
+const activeFilters = ref([]); // Correct : tableau vide
+const itemsPerPage = ref(10); // Valeur par défaut
 
 onMounted(async () => {
     getDevices();
@@ -36,7 +38,26 @@ const getRowClass = (device) => {
     if (!device.returned) {
         return 'bg-green-300'; // Vert clair
     }
-    return ''; // Classe par défaut
+    return 'bg-gray-200'; // Classe par défaut
+};
+
+// Filtrer les services en fonction des classes sélectionnées
+const filteredDevices = computed(() => {
+    if (activeFilters.value.length === 0) {
+        return devices.value; // Aucun filtre actif, retourner tous les services
+    }
+    return devices.value.filter((service) => activeFilters.value.includes(getRowClass(service)));
+});
+
+// Gérer la sélection/dé-sélection d'un filtre
+const toggleFilter = (filterClass) => {
+    if (activeFilters.value.includes(filterClass)) {
+        // Si le filtre est déjà actif, on le retire
+        activeFilters.value = activeFilters.value.filter((item) => item !== filterClass);
+    } else {
+        // Sinon, on l'ajoute
+        activeFilters.value.push(filterClass);
+    }
 };
 
 const ourDeviceImage = (img) => {
@@ -45,9 +66,9 @@ const ourDeviceImage = (img) => {
 
 const getDevices = async () => {
     try {
-        const response = await axios.get('/api/devices?&searchQuery=' + searchQuery.value);
-        devices.value = response.data.devices.data;
-        links.value = response.data.devices.links;
+        const response = await axios.get(`/api/devices?searchQuery=${searchQuery.value}&perPage=${itemsPerPage.value}`);
+        devices.value = response.data.devices.data || [];
+        links.value = response.data.devices.links || [];
     } catch (error) {
         console.error("Error fetching devices:", error);
     }
@@ -98,6 +119,7 @@ const deleteDevice = (id) => {
         }
     });
 };
+
 </script>
 
 <template>
@@ -120,7 +142,6 @@ const deleteDevice = (id) => {
                             <Link href="/devices/create" class="btn btn-secondary my-1">
                             Ajouter un appareil
                             </Link>
-                            <!-- <button @click="newDevice">Ajouter un appareil</button> -->
                         </div>
                     </div>
                     <div class="relative">
@@ -131,8 +152,10 @@ const deleteDevice = (id) => {
                         <p>Légende:</p>
                     </div>
                     <div class="legend--devices">
-                        <span class="bg-gray-200">Appareil rendu</span>
-                        <span class="bg-green-300">Appareil non rendu</span>
+                        <span class="bg-gray-200" :class="{ 'active-filter': activeFilters.includes('bg-gray-200') }"
+                        @click="toggleFilter('bg-gray-200')">Appareil rendu</span>
+                        <span class="bg-green-300"  :class="{ 'active-filter': activeFilters.includes('bg-green-300') }"
+                        @click="toggleFilter('bg-green-300')">Appareil non rendu</span>
                     </div>
                     <div class="table--heading mt-2 devices__list__heading " style="padding-top: 20px;background:#FFF">
                         <p class="table--heading--col1">Image</p>
@@ -144,7 +167,7 @@ const deleteDevice = (id) => {
                     </div>
 
                     <!-- device 1 -->
-                    <div class="table--items devices__list__item" v-for="device in devices" :key="device.id" :class="getRowClass(device)">
+                    <div class="table--items devices__list__item" v-for="device in filteredDevices" :key="device.id" :class="getRowClass(device)">
                         <img :src="ourDeviceImage(device.image)" />
                         <p>{{ device.user.name }}</p>
                         <p>{{ device.brand }}</p>
@@ -169,6 +192,19 @@ const deleteDevice = (id) => {
                             <a href="#" class="btn btn-secondary" v-for="(link, index) in links" :key="index" v-html="link.label"
                                 :class="{ active: link.active, disable: !link.url }" @click="changePage(link)"></a>
                         </ul>
+                        <select
+                            v-model="itemsPerPage"
+                            @change="getDevices"
+                            class="select-pagination"
+                        >
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                            <option value="200">200</option>
+                            <option value="500">500</option>
+                            <option value="1000">1000</option>
+                        </select>
                     </div>
                 </div>
             </div>

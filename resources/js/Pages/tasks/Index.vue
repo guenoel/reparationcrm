@@ -4,6 +4,7 @@ import { Head, Link } from '@inertiajs/vue3';
 import axios from 'axios';
 import { ref, onMounted, watch } from 'vue';
 import { Inertia } from '@inertiajs/inertia';
+import { usePage } from '@inertiajs/vue3';
 //import { useRoute, useRouter } from 'vue-router';
 
 //const router = useRouter()
@@ -15,11 +16,19 @@ import { Inertia } from '@inertiajs/inertia';
 //     }
 // });
 
+const page = usePage();
 let tasks = ref([]);
 let links = ref([]);
 let searchQuery = ref('');
+const isCustomer = ref(false);
+const itemsPerPage = ref(10); // Valeur par défaut
 
 onMounted(async () => {
+    // Check user role and set dropdown visibility
+    const authUser = page.props.auth.user;
+    if (authUser && authUser.role === 0) {
+        isCustomer.value = true;
+    }
     getTasks();
 });
 
@@ -38,7 +47,7 @@ const ourTaskImage = (img) => {
 
 const getTasks = async () => {
     try {
-        const response = await axios.get('/api/tasks?&searchQuery=' + searchQuery.value);
+        const response = await axios.get(`/api/tasks?searchQuery=${searchQuery.value}&perPage=${itemsPerPage.value}`);
         tasks.value = response.data.tasks.data;
         links.value = response.data.tasks.links;
     } catch (error) {
@@ -115,12 +124,11 @@ const formatTaskDate = (timestamp) => {
                         <div class="customers__titlebar--item">
                             <h1>Tâches</h1>
                         </div>
-                        <div class="customers__titlebar--item">
+                        <!-- <div class="customers__titlebar--item">
                             <Link href="/tasks/create" class="btn btn-secondary my-1">
                             Ajouter une tâche
                             </Link>
-                            <!-- <button @click="newDevice">Ajouter un appareil</button> -->
-                        </div>
+                        </div> -->
                     </div>
                     <div class="relative">
                         <input class="search-input" type="text" name="search" placeholder="Recherche tâche..."
@@ -134,7 +142,7 @@ const formatTaskDate = (timestamp) => {
                         <p class="table--heading--col4">Début</p>
                         <p class="table--heading--col5">Fin</p>
                         <p class="table--heading--col6">Description</p>
-                        <p class="table--heading--col7">Actions</p>
+                        <p v-if="!isCustomer" class="table--heading--col7">Actions</p>
                     </div>
 
                     <!-- device 1 -->
@@ -152,7 +160,7 @@ const formatTaskDate = (timestamp) => {
                             {{ formatTaskDate(task.end).time }}
                         </p>
                         <p>{{ task.description }}</p>
-                        <div>
+                        <div v-if="!isCustomer">
                             <button class="btn-icon btn-icon-success" @click="onEdit(task.id)">
                                 <i class="fas fa-pencil-alt"></i>
                             </button>
@@ -166,6 +174,19 @@ const formatTaskDate = (timestamp) => {
                             <a href="#" class="btn btn-secondary" v-for="(link, index) in links" :key="index" v-html="link.label"
                                 :class="{ active: link.active, disable: !link.url }" @click="changePage(link)"></a>
                         </ul>
+                        <select
+                            v-model="itemsPerPage"
+                            @change="getTasks"
+                            class="select-pagination"
+                        >
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                            <option value="200">200</option>
+                            <option value="500">500</option>
+                            <option value="1000">1000</option>
+                        </select>
                     </div>
                 </div>
             </div>

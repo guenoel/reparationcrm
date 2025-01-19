@@ -28,7 +28,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     //DEVICES
 
     Route::post('/devices', [DeviceController::class, 'store']);
-    Route::get('/devices/create', [DeviceController::class, 'create']);
     Route::get('/devices', [DeviceController::class, 'index']);
     Route::get('/devices/{device}/edit', [DeviceController::class, 'edit']);
     Route::put('/devices/{device}', [DeviceController::class, 'update']);
@@ -36,7 +35,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     //SERVICES
     Route::post('/services', [ServiceController::class, 'store']);
-    Route::get('/services/create', [ServiceController::class, 'create']);
     Route::get('/services', [ServiceController::class, 'index']);
     Route::get('/services/{service}/edit', [ServiceController::class, 'edit']);
     Route::put('/services/{service}', [ServiceController::class, 'update']);
@@ -44,7 +42,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     //TASKS
     Route::post('/tasks', [TaskController::class, 'store']);
-    Route::get('/tasks/create', [TaskController::class, 'create']);
     Route::get('/tasks', [TaskController::class, 'index']);
     Route::get('/tasks/{task}/edit', [TaskController::class, 'edit']);
     Route::put('/tasks/{task}', [TaskController::class, 'update']);
@@ -52,7 +49,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     //SPARES
     Route::post('/spares', [SpareController::class, 'store']);
-    Route::get('/spares/create', [SpareController::class, 'create']);
     Route::get('/spares', [SpareController::class, 'index']);
     Route::get('/spares/{spare}/edit', [SpareController::class, 'edit']);
     Route::put('/spares/{spare}', [SpareController::class, 'update']);
@@ -60,7 +56,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     //SPARES TYPES
     Route::post('/spare_types', [SpareTypeController::class, 'store']);
-    Route::get('/spare_types/create', [SpareTypeController::class, 'create']);
     Route::get('/spare_types', [SpareTypeController::class, 'index']);
     Route::get('/spare_types/{spare_type}/edit', [SpareTypeController::class, 'edit']);
     Route::put('/spare_types/{spare_type}', [SpareTypeController::class, 'update']);

@@ -18,6 +18,7 @@ import { Inertia } from '@inertiajs/inertia';
 let spare_types = ref([]);
 let links = ref([]);
 let searchQuery = ref('');
+const itemsPerPage = ref(10); // Valeur par défaut
 
 onMounted(async () => {
     getSpareTypes();
@@ -38,7 +39,7 @@ const ourSpareTypeImage = (img) => {
 
 const getSpareTypes = async () => {
     try {
-        const response = await axios.get('/api/spare_types?&searchQuery=' + searchQuery.value);
+        const response = await axios.get(`/api/spare_types?searchQuery=${searchQuery.value}&perPage=${itemsPerPage.value}`);
         spare_types.value = response.data.spare_types.data;
         links.value = response.data.spare_types.links;
     } catch (error) {
@@ -108,7 +109,6 @@ const deleteSpareType = (id) => {
                             <Link href="/spare_types/create" class="btn btn-secondary my-1">
                             Ajouter un type de pièce
                             </Link>
-                            <!-- <button @click="newSpareType">Ajouter un type de pièce</button> -->
                         </div>
                     </div>
                     <div class="relative">
@@ -150,6 +150,19 @@ const deleteSpareType = (id) => {
                             <a href="#" class="btn btn-secondary" v-for="(link, index) in links" :key="index" v-html="link.label"
                                 :class="{ active: link.active, disable: !link.url }" @click="changePage(link)"></a>
                         </ul>
+                        <select
+                            v-model="itemsPerPage"
+                            @change="getSpareTypes"
+                            class="select-pagination"
+                        >
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                            <option value="200">200</option>
+                            <option value="500">500</option>
+                            <option value="1000">1000</option>
+                        </select>
                     </div>
                 </div>
             </div>

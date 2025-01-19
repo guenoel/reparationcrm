@@ -38,12 +38,12 @@ class SpareController extends Controller
                         ->orWhere('description', 'like', $searchTerm);
             });
             }
-            // Vérifier si le paramètre `all` est présent pour la création
+            $perPage = $request->input('perPage', 10);
             if ($request->has('all') && $request->all == true) {
                 $spares = $spares->whereHas('service')->with('service', 'service.device', 'service.device.user', 'spareType')->latest()->get();
             } else {
                 // ... sinon c'est avec pagination pour l'index.
-            $spares = $spares->whereHas('service')->with('service', 'service.device', 'service.device.user', 'spareType')->latest()->paginate(5);
+            $spares = $spares->whereHas('service')->with('service', 'service.device', 'service.device.user', 'spareType')->latest()->paginate($perPage);
             Log::info('Spares:', $spares->toArray());
             }
 

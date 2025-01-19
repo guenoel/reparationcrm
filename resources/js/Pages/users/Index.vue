@@ -18,6 +18,7 @@ import { Inertia } from '@inertiajs/inertia';
 let users = ref([]);
 let links = ref([]);
 let searchQuery = ref('');
+const itemsPerPage = ref(10); // Valeur par défaut
 
 onMounted(async () => {
     getUsers();
@@ -38,7 +39,7 @@ const ourUserImage = (img) => {
 
 const getUsers = async () => {
     try {
-        const response = await axios.get('/api/users?&searchQuery=' + searchQuery.value);
+        const response = await axios.get(`/api/users?searchQuery=${searchQuery.value}&perPage=${itemsPerPage.value}`);
         users.value = response.data.users.data;
         links.value = response.data.users.links;
     } catch (error) {
@@ -114,6 +115,19 @@ const onEdit = (id) => {
                             <a href="#" class="btn btn-secondary" v-for="(link, index) in links" :key="index" v-html="link.label"
                                 :class="{ active: link.active, disable: !link.url }" @click="changePage(link)"></a>
                         </ul>
+                        <select
+                            v-model="itemsPerPage"
+                            @change="getUsers"
+                            class="select-pagination"
+                        >
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                            <option value="200">200</option>
+                            <option value="500">500</option>
+                            <option value="1000">1000</option>
+                        </select>
                     </div>
                 </div>
             </div>
