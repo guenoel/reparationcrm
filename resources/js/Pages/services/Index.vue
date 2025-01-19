@@ -203,12 +203,13 @@ const deleteService = (id) => {
                             Payé, non accepté, non terminé, non rendu
                         </span>
                         <span
-                            class="bg-gray-200"
-                            :class="{ 'active-filter': activeFilters.includes('bg-gray-200') }"
-                            @click="toggleFilter('bg-gray-200')"
+                            class="bg-red-500"
+                            :class="{ 'active-filter': activeFilters.includes('bg-red-500') }"
+                            @click="toggleFilter('bg-red-500')"
                         >
-                            Non payé, non accepté, non terminé, rendu
+                            Non payé, accepté, terminé, rendu
                         </span>
+                        
                         <span
                             class="bg-blue-300"
                             :class="{ 'active-filter': activeFilters.includes('bg-blue-300') }"
@@ -221,21 +222,21 @@ const deleteService = (id) => {
                             :class="{ 'active-filter': activeFilters.includes('bg-blue-500') }"
                             @click="toggleFilter('bg-blue-500')"
                         >
-                            Non payé, accepté, terminé, non rendu
+                            Payé, accepté, non terminé, non rendu
                         </span>
                         <span
-                            class="bg-gray-500"
-                            :class="{ 'active-filter': activeFilters.includes('bg-gray-500') }"
-                            @click="toggleFilter('bg-gray-500')"
+                            class="bg-gray-200"
+                            :class="{ 'active-filter': activeFilters.includes('bg-gray-200') }"
+                            @click="toggleFilter('bg-gray-200')"
                         >
-                            Payé, accepté, terminé, rendu
+                            Non payé, non accepté, non terminé, rendu
                         </span>
                         <span
                             class="bg-green-300"
                             :class="{ 'active-filter': activeFilters.includes('bg-green-300') }"
                             @click="toggleFilter('bg-green-300')"
                         >
-                            Payé, accepté, non terminé, non rendu
+                            Non payé, accepté, terminé, non rendu
                         </span>
                         <span
                             class="bg-green-700"
@@ -245,11 +246,11 @@ const deleteService = (id) => {
                             Payé, accepté, terminé, non rendu
                         </span>
                         <span
-                            class="bg-red-500"
-                            :class="{ 'active-filter': activeFilters.includes('bg-red-500') }"
-                            @click="toggleFilter('bg-red-500')"
+                            class="bg-gray-500"
+                            :class="{ 'active-filter': activeFilters.includes('bg-gray-500') }"
+                            @click="toggleFilter('bg-gray-500')"
                         >
-                            Non payé, accepté, terminé, rendu
+                            Payé, accepté, terminé, rendu
                         </span>
                     </div>
                     <div class="table--heading mt-2 services__list__heading " style="padding-top: 20px;background:#FFF">

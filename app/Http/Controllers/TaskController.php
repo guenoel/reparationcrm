@@ -26,6 +26,17 @@ class TaskController extends Controller
     {
         try {
             $tasks = task::query();
+
+            $user_role = Auth::user()->role;
+            $userId = Auth::id();
+    
+            // Si l'utilisateur est un client (role = 0), on filtre par ses appareils via les services
+            if ($user_role === 0) {
+                $tasks->whereHas('service.device', function ($deviceQuery) use ($userId) {
+                    $deviceQuery->where('user_id', $userId);
+                });
+            }
+
             if($request->searchQuery != ''){
                 $searchTerm = "%{$request->searchQuery}%";
             

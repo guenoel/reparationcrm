@@ -89,6 +89,7 @@ const getDevices = async () => {
         
         if (response.data.device) {
             deviceInfo.value = response.data.device; // Appareil spécifique
+            form.device_id = deviceId; // Pré-sélectionner le device_id dans le formulaire
             console.log("Device Info:", deviceInfo.value);
         }
 
@@ -134,8 +135,10 @@ const getService = async () => {
 
 const handleSave = (values, actions) => {
     if (editMode.value) {
+        console.log('Updating service:', JSON.stringify(form, null, 2));
         updateService(values, actions);
     } else {
+        console.log('Creating service:', JSON.stringify(form, null, 2));
         createService(values, actions);
     }
 };

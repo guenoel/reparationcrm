@@ -36,6 +36,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     //SERVICES
     Route::post('/services', [ServiceController::class, 'store']);
     Route::get('/services', [ServiceController::class, 'index']);
+    Route::get('/services/create', [ServiceController::class, 'create']);
     Route::get('/services/{service}/edit', [ServiceController::class, 'edit']);
     Route::put('/services/{service}', [ServiceController::class, 'update']);
     Route::delete('/services/{service}', [ServiceController::class,'destroy']);
@@ -43,6 +44,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     //TASKS
     Route::post('/tasks', [TaskController::class, 'store']);
     Route::get('/tasks', [TaskController::class, 'index']);
+    Route::get('/tasks/create', [TaskController::class, 'create']);
     Route::get('/tasks/{task}/edit', [TaskController::class, 'edit']);
     Route::put('/tasks/{task}', [TaskController::class, 'update']);
     Route::delete('/tasks/{task}', [TaskController::class,'destroy']);
@@ -50,6 +52,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     //SPARES
     Route::post('/spares', [SpareController::class, 'store']);
     Route::get('/spares', [SpareController::class, 'index']);
+    Route::get('/spares/create', [SpareController::class, 'create']);
     Route::get('/spares/{spare}/edit', [SpareController::class, 'edit']);
     Route::put('/spares/{spare}', [SpareController::class, 'update']);
     Route::delete('/spares/{spare}', [SpareController::class,'destroy']);

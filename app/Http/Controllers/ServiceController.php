@@ -9,6 +9,7 @@ use Intervention\Image\Laravel\Facades\Image;
 use Inertia\Inertia;
 use Log;
 use function Pest\Laravel\get;
+use Illuminate\Support\Facades\Auth;
 
 class ServiceController extends Controller
 {
@@ -23,6 +24,16 @@ class ServiceController extends Controller
     {
         try {
             $services = Service::query();
+
+            $user_role = Auth::user()->role;
+            $userId = Auth::id();
+
+            if ($user_role === 0) {
+                $services->whereHas('device', function ($deviceQuery) use ($userId) {
+                    $deviceQuery->where('user_id', $userId);
+                });
+            }
+
             if($request->searchQuery != ''){
                 $searchTerm = "%{$request->searchQuery}%";
             

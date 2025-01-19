@@ -10,6 +10,7 @@ use Intervention\Image\Laravel\Facades\Image;
 use Inertia\Inertia;
 use Log;
 use function Pest\Laravel\get;
+use Illuminate\Support\Facades\Auth;
 
 class SpareController extends Controller
 {
@@ -24,6 +25,16 @@ class SpareController extends Controller
     {
         try {
             $spares = Spare::query();
+
+            $user_role = Auth::user()->role;
+            $userId = Auth::id();
+            // Si l'utilisateur est un client (role = 0), on filtre par ses appareils via les services
+            if ($user_role === 0) {
+                $spares->whereHas('service.device', function ($deviceQuery) use ($userId) {
+                    $deviceQuery->where('user_id', $userId);
+                });
+            }
+
             if($request->searchQuery != ''){
                 $searchTerm = "%{$request->searchQuery}%";
             

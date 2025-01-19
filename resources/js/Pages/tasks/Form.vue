@@ -174,7 +174,7 @@ const updateTask = (values, actions) => {
                             <p class="mb-1">Service ID</p>
                             <select v-model="form.service_id" class="input" id="service_id" name="service_id">
                                 <option v-for="service in page.props.services" :key="service.id" :value="service.id">
-                                    {{ service.device.user.name }} -> {{ service.device.brand }} {{ service.device.model_name }} -> {{ service.description }}
+                                    {{ service.description }}
                                 </option>
                             </select>
                             <small style="color:red" v-if="errors.service_id">{{ errors.service_id }}</small>
