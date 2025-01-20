@@ -154,8 +154,7 @@ const createService = (values, actions) => {
         .catch((error) => {
             if (error.response && error.response.status === 422) {
                 errors.value = error.response.data.errors;
-            } else if (error.request) {
-                console.error("Erreur de réseau ou serveur injoignable :", error.request);
+                console.error("Validation errors:", error.value);
             } else {
                 console.error("Error creating service:", error);
             }
@@ -172,7 +171,7 @@ const updateService = (values, actions) => {
         }, 2000);
         })
         .catch((error) => {
-            if (error.response.status === 422) {
+            if (error.response && error.response.status === 422) {
                 errors.value = error.response.data.errors;
             } else {
                 console.error("Error creating service:", error);
@@ -237,6 +236,7 @@ const updateService = (values, actions) => {
                                 />
 
                                 <select v-model="form.device_id" class="input">
+
                                     <option
                                         v-for="[id, label] in Object.entries(filteredDevices)"
                                         :key="id"
@@ -282,7 +282,6 @@ const updateService = (values, actions) => {
                             <div v-if="!customerView">
                                 <p class="mb-1">Prix</p>
                                 <input type="text" class="input" id="price" name="price" v-model="form.price">
-                                <small style="color:red" v-if="errors.price">{{ errors.price }}</small>
                             </div>
                             <!-- Vue coté client -->
                             <div v-if="customerView && editMode && form.price != null">

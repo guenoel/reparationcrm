@@ -98,21 +98,23 @@ const onEdit = (id) => {
 
 const deleteDevice = (id) => {
     Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
+        title: "Etes vous sur ?",
+        text: "Vous ne pourrez pas annuler cette action !",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!"
+        confirmButtonText: "oui, supprimer!"
     }).then((result) => {
         if (result.isConfirmed) {
             axios.delete(`/api/devices/${id}`)
                 .then(() => {
                     Swal.fire({
-                        title: "Deleted!",
-                        text: "Your file has been deleted.",
-                        icon: "success"
+                        title: "Supprimé!",
+                        text: "Appareil supprimé avec succès.",
+                        icon: "success",
+                        timer: 2000,
+                        showConfirmButton: false
                     });
                     getDevices();
                 });

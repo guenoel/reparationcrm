@@ -125,7 +125,6 @@ class DeviceController extends Controller
             'user_id'=> 'required',
             'brand'=> 'required',
             'model_name'=> 'required',
-            'description'=> 'required',
         ]);
 
         $device = new Device();
@@ -146,11 +145,11 @@ class DeviceController extends Controller
         }
         $device->brand = $request->brand;
         $device->model_name = $request->model_name;
-        $device->model_number = $request->model_number;
-        $device->serial_number = $request->serial_number;
-        $device->imei = $request->imei;
-        $device->description = $request->description;
-        $device->returned = $request->returned;
+        $device->model_number = $request->model_number ?? null;
+        $device->serial_number = $request->serial_number ?? null;
+        $device->imei = $request->imei ?? null;
+        $device->description = $request->description ?? '';
+        $device->returned = $request->returned ?? false;
         $device->save();
     }
 
@@ -183,7 +182,6 @@ class DeviceController extends Controller
             'user_id'=> 'required|exists:users,id',
             'brand'=> 'required|string',
             'model_name'=> 'required|string',
-            'description'=> 'required|string',
         ]);
 
         $device = Device::findOrFail($id);
@@ -205,12 +203,12 @@ class DeviceController extends Controller
             $device->image = $name;
         }
         $device->brand = $request->brand;
-        $device->model_name = $request->model_name;
-        $device->model_number = $request->model_number;
-        $device->serial_number = $request->serial_number;
-        $device->imei = $request->imei;
-        $device->description = $request->description;
-        $device->returned = $request->returned;
+        $device->model_name = $request->model_name ?? $device->model_name;
+        $device->model_number = $request->model_number ?? $device->model_number;
+        $device->serial_number = $request->serial_number ?? $device->serial_number;
+        $device->imei = $request->imei ?? $device->imei;
+        $device->description = $request->description ?? $device->description;
+        $device->returned = $request->returned ?? $device->returned;
         $device->save();
 
         return response()->json(['message' => 'Device updated successfully']);

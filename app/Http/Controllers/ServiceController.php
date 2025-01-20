@@ -132,29 +132,25 @@ class ServiceController extends Controller
                 'price' => 'nullable|numeric',
                 'price_paid' => 'nullable|boolean',
                 'done' => 'nullable|boolean',
+                'returned' => 'nullable|boolean',
             ]);
         
-            $service = new Service();
-            $service->device_id = $validatedData['device_id'];
-            $service->description = $validatedData['description'];
-            $service->accepted = $validatedData['accepted'] ?? false;
-            $service->deposit = $validatedData['deposit'] ?? null;
-            $service->deposit_paid = $validatedData['deposit_paid'] ?? false;
-            $service->price = $validatedData['price'] ?? null;
-            $service->price_paid = $validatedData['price_paid'] ?? false;
-            $service->done = $validatedData['done'] ?? false;
-            $service->save();
+            $service = Service::create($validatedData);
 
             $device = $service->device; // Relation entre Service et Device
             if ($device) {
-                $device->returned = $service->done; // Mettre à jour en fonction de la valeur de "done"
+                $device->returned = $validatedData['returned'] ?? false;
                 $device->save();
             }
         
             return response()->json(['message' => 'Service created successfully'], 201);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Capturer les erreurs de validation et retourner un code 422
+            return response()->json(['errors' => $e->errors()], 422);
         } catch (\Exception $e) {
+            // Capturer les autres erreurs et retourner un code 500
             Log::error('Error creating service:', ['error' => $e->getMessage()]);
-            return response()->json(['error' => 'An error occurred while creating the service'], 500);
+            return response()->json(['error' => 'An unexpected error occurred'], 500);
         }
     }
 
@@ -183,6 +179,7 @@ class ServiceController extends Controller
             'price'=> 'nullable|numeric',
             'price_paid'=> 'required|boolean',
             'done'=> 'required|boolean',
+            'returned'=> 'required|boolean',
         ]);
 
         $service = Service::findOrFail($id);
@@ -202,7 +199,7 @@ class ServiceController extends Controller
         // Mise à jour de la valeur "returned" du device associé
         $device = $service->device; // Relation entre Service et Device
         if ($device) {
-            $device->returned = $request->done; // "returned" est mis à jour avec la valeur de "done"
+            $device->returned = $request->returned;
             $device->save(); // Enregistrer les modifications sur le device
         }
 

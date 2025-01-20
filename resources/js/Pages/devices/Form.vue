@@ -148,7 +148,12 @@ const createDevice = (values, actions) => {
     console.log('Form data being sent:', JSON.stringify(form, null, 2));
     axios.post('/api/devices', form)
         .then((response) => {
-            toast.fire({ icon: "success", title: "Appareil ajouté" });
+            toast.fire({
+                icon: "success",
+                title: "Appareil ajouté",
+                timer: 2000,
+                showConfirmButton: false
+            });
             setTimeout(() => {
                 Inertia.visit('/devices/index/');
             }, 2000);
@@ -160,6 +165,7 @@ const createDevice = (values, actions) => {
                 console.error("Error creating device:", error);
             }
         });
+        console.log('Form data being sent:', JSON.stringify(form, null, 2));
 };
 
 const updateDevice = (values, actions) => {
@@ -171,7 +177,7 @@ const updateDevice = (values, actions) => {
         }, 2000);
         })
         .catch((error) => {
-            if (error.response.status === 422) {
+            if (error.response && error.response.status === 422) {
                 errors.value = error.response.data.errors;
             } else {
                 console.error("Error creating device:", error);
@@ -239,7 +245,6 @@ const updateDevice = (values, actions) => {
                                 <input type="text" class="input" id="imei" name="imei" v-model="form.imei">
                                 <p class="my-1">Description (optional)</p>
                                 <textarea cols="10" rows="5" class="textarea" id="description" name="description" v-model="form.description"></textarea>
-                                <small style="color:red" v-if="errors.description">{{ errors.description }}</small>
                             </div>
                             <div v-if="hideUserDropdown && editMode && form.has_service">
                                 <p class="mb-1">Marque: {{ form.brand }}</p>
@@ -251,7 +256,7 @@ const updateDevice = (values, actions) => {
                             </div>
                             <div v-if="!hideUserDropdown">
                                 <p class="mb-1">Restitué au client ?</p>
-                                <select v-model="form.returned" class="input" id="returned" name="returned">
+                                <select v-model="form.returned" class="input" id="returned" name="returned" default="0">
                                     <option value="0">Non</option>
                                     <option value="1">Oui</option>
                                 </select>
