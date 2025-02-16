@@ -153,16 +153,16 @@ const formatTaskDate = (timestamp) => {
                         <p>{{ spare.spare_type.dealer }}<br>{{ spare.spare_type.type }}<br>{{ spare.spare_type.brand }}</p>
                         <p>{{ spare.description }}</p>
                         <p>
-                            {{ formatTaskDate(spare.purchase_date).date }}<br>
-                            {{ formatTaskDate(spare.purchase_date).time }}
+                            {{ spare.formatted_purchase_date }}<br>
+                            {{ spare.formatted_purchase_time }}
                         </p>
                         <p>
-                            {{ formatTaskDate(spare.reception_date).date }}<br>
-                            {{ formatTaskDate(spare.reception_date).time }}
+                            {{ spare.formatted_reception_date }}<br>
+                            {{ spare.formatted_reception_time }}
                         </p>
                         <p>
-                            {{ formatTaskDate(spare.return_date).date }}<br>
-                            {{ formatTaskDate(spare.return_date).time }}
+                            {{ spare.formatted_return_date }}<br>
+                            {{ spare.formatted_return_time }}
                         </p>
                         <div v-if="!isCustomer">
                             <button class="btn-icon btn-icon-success" @click="onEdit(spare.id)">

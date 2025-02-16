@@ -24,40 +24,68 @@ class SpareController extends Controller
     public function index(Request $request)
     {
         try {
-            $spares = Spare::query();
-
+            $sparesQuery = Spare::query();
+    
             $user_role = Auth::user()->role;
             $userId = Auth::id();
-            // Si l'utilisateur est un client (role = 0), on filtre par ses appareils via les services
+    
+            // Filtrer pour les clients (role = 0)
             if ($user_role === 0) {
-                $spares->whereHas('service.device', function ($deviceQuery) use ($userId) {
+                $sparesQuery->whereHas('service.device', function ($deviceQuery) use ($userId) {
                     $deviceQuery->where('user_id', $userId);
                 });
             }
-
-            if($request->searchQuery != ''){
+    
+            // Ajouter les critères de recherche
+            if ($request->searchQuery) {
                 $searchTerm = "%{$request->searchQuery}%";
-            
-            // Adding multiple fields for search
-            $spares = $spares->where(function ($query) use ($searchTerm) {
-                $query  ->WhereHas('service', function ($serviceQuery) use ($searchTerm) {
-                    $serviceQuery->where('name', 'like', $searchTerm); // Recherche sur le nom de l'utilisateur
-                })
-                        ->orwhere('purchase_date', 'like', $searchTerm)
-                        ->orWhere('reception_date', 'like', $searchTerm)
-                        ->orWhere('return_date', 'like', $searchTerm)
-                        ->orWhere('description', 'like', $searchTerm);
-            });
+                $sparesQuery->where(function ($query) use ($searchTerm) {
+                    $query->whereHas('service.device.user', function ($userQuery) use ($searchTerm) {
+                        $userQuery->where('name', 'like', $searchTerm); // Nom du client
+                    })
+                    ->orWhereHas('service', function ($serviceQuery) use ($searchTerm) {
+                        $serviceQuery->where('description', 'like', $searchTerm); // Description du service
+                    })
+                    ->orWhereHas('spareType', function ($spareTypeQuery) use ($searchTerm) {
+                        $spareTypeQuery->where('dealer', 'like', $searchTerm) // Revendeur
+                                       ->orWhere('type', 'like', $searchTerm) // Type de pièce
+                                       ->orWhere('brand', 'like', $searchTerm); // Marque
+                    })
+                    ->orWhereRaw('DATE(purchase_date) like ?', ["%$searchTerm%"]) // Date d'achat
+                    ->orWhereRaw('TIME(purchase_date) like ?', ["%$searchTerm%"]) // Heure d'achat
+                    ->orWhereRaw('DATE(reception_date) like ?', ["%$searchTerm%"]) // Date de réception
+                    ->orWhereRaw('TIME(reception_date) like ?', ["%$searchTerm%"]) // Heure de réception
+                    ->orWhereRaw('DATE(return_date) like ?', ["%$searchTerm%"]) // Date de retour
+                    ->orWhereRaw('TIME(return_date) like ?', ["%$searchTerm%"]) // Heure de retour
+                    ->orWhere('description', 'like', $searchTerm); // Description de la pièce
+                });
             }
+    
+            // Filtrer par `service_id` si fourni
+            if ($request->has('service_id') && $request->service_id != null) {
+                $sparesQuery->where('service_id', $request->service_id);
+            }
+    
             $perPage = $request->input('perPage', 10);
+    
+            // Charger les données avec ou sans pagination
             if ($request->has('all') && $request->all == true) {
-                $spares = $spares->whereHas('service')->with('service', 'service.device', 'service.device.user', 'spareType')->latest()->get();
+                $spares = $sparesQuery->with('service', 'service.device', 'service.device.user', 'spareType')->latest()->get();
             } else {
-                // ... sinon c'est avec pagination pour l'index.
-            $spares = $spares->whereHas('service')->with('service', 'service.device', 'service.device.user', 'spareType')->latest()->paginate($perPage);
-            Log::info('Spares:', $spares->toArray());
+                $spares = $sparesQuery->with('service', 'service.device', 'service.device.user', 'spareType')->latest()->paginate($perPage);
             }
-
+    
+            // Ajouter le formatage date/heure pour chaque pièce
+            $spares->getCollection()->transform(function ($spare) {
+                $spare->formatted_purchase_date = $spare->purchase_date ? \Carbon\Carbon::parse($spare->purchase_date)->format('Y-m-d') : null;
+                $spare->formatted_purchase_time = $spare->purchase_date ? \Carbon\Carbon::parse($spare->purchase_date)->format('H:i:s') : null;
+                $spare->formatted_reception_date = $spare->reception_date ? \Carbon\Carbon::parse($spare->reception_date)->format('Y-m-d') : null;
+                $spare->formatted_reception_time = $spare->reception_date ? \Carbon\Carbon::parse($spare->reception_date)->format('H:i:s') : null;
+                $spare->formatted_return_date = $spare->return_date ? \Carbon\Carbon::parse($spare->return_date)->format('Y-m-d') : null;
+                $spare->formatted_return_time = $spare->return_date ? \Carbon\Carbon::parse($spare->return_date)->format('H:i:s') : null;
+                return $spare;
+            });
+    
             return response()->json([
                 'spares' => $spares
             ], 200);
@@ -65,7 +93,7 @@ class SpareController extends Controller
             Log::error('Error fetching spares: ' . $e->getMessage());
             return response()->json(['error' => 'An error occurred while fetching spares'], 500);
         }
-    }
+    }    
 
     public function create()
     {

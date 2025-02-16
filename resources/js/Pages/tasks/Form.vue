@@ -12,6 +12,7 @@ const taskId = ref();
 
 const form = reactive({
     service_id: '',
+    spare_ids: [],
     start: '',
     end: '',
     description: '',
@@ -34,6 +35,7 @@ onMounted(() => {
         getTask();
     } else {
         getServices();
+        getSpares();
         getUser();
     }
 });
@@ -48,6 +50,26 @@ const getServices = async () => {
         console.error("Error fetching services:", error);
     }
 };
+
+const getSpares = async () => {
+    try {
+        const params = new URLSearchParams(window.location.search);
+        form.service_id = params.get('service_id');
+
+        if (!form.service_id) {
+            console.error("Service ID is missing, unable to fetch spares.");
+            return;
+        }
+
+        let response = await axios.get(`/api/spares?service_id=${form.service_id}`); //&all=true
+        // Extraire uniquement les spares depuis la clé "data"
+        page.props.spares = response.data.spares.data || [];
+        console.log("Fetched spares:", page.props.spares);
+    } catch (error) {
+        console.error("Error fetching spares:", error);
+    }
+};
+
 
 const getUser = async () => {
     try {
@@ -67,12 +89,25 @@ const getTask = async () => {
                 description
             }));
         }
+        // Transformer l'objet spares en tableau
+        if (response.data.spares) {
+            page.props.spares = Object.entries(response.data.spares).map(([id, description]) => ({
+                id: Number(id),
+                description
+            }));
+        }
 
         if (response.data.task) {
             form.service_id = response.data.task.service_id;
+            form.user_id = response.data.task.user_id;
+            form.spare_ids = response.data.task.spares.map(spare => spare.id) || [];
             form.start = response.data.task.start;
             form.end = response.data.task.end;
             form.description = response.data.task.description;
+
+            // Récupérer uniquement les spares associés au service_id de la tâche
+            const sparesResponse = await axios.get(`/api/spares?service_id=${form.service_id}`);
+            page.props.spares = sparesResponse.data.spares.data || [];
         }
             
     } catch (error) {
@@ -171,21 +206,24 @@ const updateTask = (values, actions) => {
                 <div class="tasks__create__cardWrapper mt-2">
                     <div class="tasks__create__main">
                         <div class="tasks__create__main--addInfo card py-2 px-2 bg-white">
-                            <p class="mb-1">Service ID</p>
+                            <p class="mb-1">Service</p>
                             <select v-model="form.service_id" class="input" id="service_id" name="service_id">
                                 <option v-for="service in page.props.services" :key="service.id" :value="service.id">
                                     {{ service.description }}
                                 </option>
                             </select>
                             <small style="color:red" v-if="errors.service_id">{{ errors.service_id }}</small>
-
-                            <!-- <p class="mb-1">Technicien</p>
-                            <select v-model="form.user_id" class="input" id="user_id" name="user_id">
-                                <option v-for="user in page.props.users" :key="user.id" :value="user.id">
-                                    {{ user.name }}
+                            <p class="mb-1">Pièces</p>
+                            <select v-model="form.spare_ids" class="input" id="spare_ids" name="spare_ids" multiple>
+                                <option v-if="Array.isArray(page.props.spares) && page.props.spares.length > 0"
+                                        v-for="spare in page.props.spares"
+                                        :key="spare.id"
+                                        :value="spare.id"
+                                >
+                                    {{ spare.description }}
                                 </option>
                             </select>
-                            <small style="color:red" v-if="errors.user_id">{{ errors.user_id }}</small> -->
+                            <small style="color:red" v-if="errors.spare_ids">{{ errors.spare_ids }}</small>
 
                             <p class="mb-1">Début de la tâche</p>
                             <input type="datetime-local" class="input" id="start" name="start" v-model="form.start" />

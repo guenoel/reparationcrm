@@ -16,6 +16,7 @@ const form = reactive({
     brand: '',
     model_name: '',
     model_number: '',
+    color: '',
     serial_number: '',
     imei: '',
     description: '',
@@ -97,6 +98,7 @@ const getDevice = async () => {
                 form.brand = response.data.device.brand;
                 form.model_name = response.data.device.model_name;
                 form.model_number = response.data.device.model_number;
+                form.color = response.data.device.color;
                 form.serial_number = response.data.device.serial_number;
                 form.imei = response.data.device.imei;
                 form.description = response.data.device.description;
@@ -239,6 +241,8 @@ const updateDevice = (values, actions) => {
                                 <small style="color:red" v-if="errors.model_name">{{ errors.model_name }}</small>
                                 <p class="mb-1">No de modèle</p>
                                 <input type="text" class="input" id="model_number" name="model_number" v-model="form.model_number">
+                                <p class="mb-1">Couleur</p>
+                                <input type="text" class="input" id="color" name="color" v-model="form.color">
                                 <p class="mb-1">No de série</p>
                                 <input type="text" class="input" id="serial_number" name="serial_number" v-model="form.serial_number">
                                 <p class="mb-1">imei</p>
@@ -250,6 +254,7 @@ const updateDevice = (values, actions) => {
                                 <p class="mb-1">Marque: {{ form.brand }}</p>
                                 <p class="mb-1">Nom de modèle: {{ form.model_name }}</p>
                                 <p class="mb-1">Numéro de modèle: {{ form.model_number }}</p>
+                                <p class="mb-1">Couleur: {{ form.color }}</p>
                                 <p class="mb-1">Numéro de série: {{ form.serial_number }}</p>
                                 <p class="mb-1">imei: {{ form.imei }}</p>
                                 <p class="mb-1">Description: {{ form.description }}</p>

@@ -255,10 +255,10 @@ const deleteService = (id) => {
                     </div>
                     <div class="table--heading mt-2 services__list__heading " style="padding-top: 20px;background:#FFF">
                         <p class="table--heading--col1">Utilisateur</p>
-                        <p class="table--heading--col2">Appareil</p>
-                        <p class="table--heading--col3">Marque</p>
-                        <p class="table--heading--col4">Nom Modèle</p>
-                        <p class="table--heading--col5">No Modèle</p>
+                        <p class="table--heading--col2">Marque</p>
+                        <p class="table--heading--col3">Nom Modèle</p>
+                        <p class="table--heading--col4">No Modèle</p>
+                        <p class="table--heading--col5">No Serie</p>
                         <p class="table--heading--col6">Description de la prestation</p>
                         <p class="table--heading--col7">Prix</p>
                         <p class="table--heading--col8">Actions</p>
@@ -267,10 +267,10 @@ const deleteService = (id) => {
                     <!-- device 1 -->
                     <div class="table--items services__list__item" v-for="service in filteredServices" :key="service.id" :class="getRowClass(service)">
                         <p>{{ service.device.user.name }}</p>
-                        <p>{{ service.device_id }}</p>
                         <p>{{ service.device.brand }}</p>
                         <p>{{ service.device.model_name }}</p>
                         <p>{{ service.device.model_number }}</p>
+                        <p>{{ service.device.serial_number }}</p>
                         <p>{{ service.description }}</p>
                         <p>{{ service.price }}</p>
                         <div>

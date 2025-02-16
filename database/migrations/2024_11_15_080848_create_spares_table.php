@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Schema;
 use App\Models\Service;
 use App\Models\Spare;
 use App\Models\SpareType;
+use App\Models\Task;
 
 return new class extends Migration
 {
@@ -31,6 +32,7 @@ return new class extends Migration
             $table->timestamps();
             $table->string("image")->default('no-image.jpg');
             $table->foreignIdFor(Service::class)->constrained()->onDelete('cascade');
+            $table->foreignIdFor(Task::class)->nullable()->constrained();
             $table->foreignIdFor(SpareType::class)->constrained()->onDelete('cascade');
             $table->text('description');
             $table->timestamp('purchase_date')->nullable();

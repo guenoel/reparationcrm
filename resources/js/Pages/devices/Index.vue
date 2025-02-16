@@ -164,8 +164,9 @@ const deleteDevice = (id) => {
                         <p class="table--heading--col2">Client</p>
                         <p class="table--heading--col3">Marque</p>
                         <p class="table--heading--col4">Modèle</p>
-                        <p class="table--heading--col5">Description de l'appareil</p>
-                        <p class="table--heading--col6">actions</p>
+                        <p class="table--heading--col5">Couleur</p>
+                        <p class="table--heading--col6">Description de l'appareil</p>
+                        <p class="table--heading--col7">actions</p>
                     </div>
 
                     <!-- device 1 -->
@@ -174,6 +175,7 @@ const deleteDevice = (id) => {
                         <p>{{ device.user.name }}</p>
                         <p>{{ device.brand }}</p>
                         <p>{{ device.model_name }}</p>
+                        <p>{{ device.color }}</p>
                         <p>{{ device.description }}</p>
                         <div>
                             <button class="btn-icon btn-icon-success" @click="onEdit(device.id)">

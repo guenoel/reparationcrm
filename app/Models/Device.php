@@ -10,7 +10,7 @@ use Laravel\Sanctum\HasApiTokens;
 class Device extends Authenticatable
 {
     use HasFactory, HasApiTokens;
-    protected $fillable = ['image', 'user_id', 'brand', 'model_name', 'model_number', 'serial_number', 'imei', 'description', 'returned', 'created_at', 'updated_at'];
+    protected $fillable = ['image', 'user_id', 'brand', 'model_name', 'model_number', 'color', 'serial_number', 'imei', 'description', 'returned', 'created_at', 'updated_at'];
 
     public function user()
     {

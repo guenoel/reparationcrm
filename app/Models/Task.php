@@ -19,5 +19,8 @@ class Task extends Authenticatable
     {
         return $this->belongsTo(Service::class);
     }
-
+    public function spares()
+    {
+        return $this->hasMany(Spare::class);
+    }
 }

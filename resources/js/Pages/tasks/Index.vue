@@ -152,12 +152,12 @@ const formatTaskDate = (timestamp) => {
                         <p>{{ task.service.device.user.name }} -> {{ task.service.device.brand }} {{ task.service.device.model_name }}<br>-> {{ task.service.description }}</p>
                         <p>{{ task.user.name }}</p>
                         <p>
-                            {{ formatTaskDate(task.start).date }}<br>
-                            {{ formatTaskDate(task.start).time }}
+                            {{ task.formatted_start_date }}<br>
+                            {{ task.formatted_start_time }}
                         </p>
                         <p>
-                            {{ formatTaskDate(task.end).date }}<br>
-                            {{ formatTaskDate(task.end).time }}
+                            {{ task.formatted_end_date }}<br>
+                            {{ task.formatted_end_time }}
                         </p>
                         <p>{{ task.description }}</p>
                         <div v-if="!isCustomer">

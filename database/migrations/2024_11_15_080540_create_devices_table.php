@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string("brand");
             $table->string("model_name");
             $table->string("model_number")->nullable();
+            $table->string("color")->nullable();
             $table->string("serial_number")->nullable();
             $table->string("imei")->nullable();
             $table->text("description")->nullable();

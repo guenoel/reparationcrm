@@ -43,6 +43,10 @@ class DeviceController extends Controller
                     })
                             ->orWhere('brand', 'like', $searchTerm)
                             ->orWhere('model_name', 'like', $searchTerm)
+                            ->orWhere('model_number', 'like', $searchTerm)
+                            ->orWhere('color', 'like', $searchTerm)
+                            ->orWhere('serial_number', 'like', $searchTerm)
+                            ->orWhere('imei', 'like', $searchTerm)
                             ->orWhere('description', 'like', $searchTerm);
                 });
             }
@@ -146,6 +150,7 @@ class DeviceController extends Controller
         $device->brand = $request->brand;
         $device->model_name = $request->model_name;
         $device->model_number = $request->model_number ?? null;
+        $device->color = $request->color ?? null;
         $device->serial_number = $request->serial_number ?? null;
         $device->imei = $request->imei ?? null;
         $device->description = $request->description ?? '';
@@ -205,6 +210,7 @@ class DeviceController extends Controller
         $device->brand = $request->brand;
         $device->model_name = $request->model_name ?? $device->model_name;
         $device->model_number = $request->model_number ?? $device->model_number;
+        $device->color = $request->color ?? $device->color;
         $device->serial_number = $request->serial_number ?? $device->serial_number;
         $device->imei = $request->imei ?? $device->imei;
         $device->description = $request->description ?? $device->description;

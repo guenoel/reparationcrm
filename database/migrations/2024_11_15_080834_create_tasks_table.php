@@ -5,6 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use App\Models\User;
 use App\Models\Service;
+use App\Models\Spare;
 
 return new class extends Migration
 {
@@ -18,7 +19,8 @@ return new class extends Migration
             $table->timestamps();
             $table->string('image')->default('no-image.jpg');
             $table->foreignIdFor(Service::class)->constrained()->onDelete('cascade');
-            $table->foreignIdFor(User::class)->constrained()->onDelete('cascade');
+            $table->foreignIdFor(User::class)->constrained()->onDelete('set null');
+            $table->foreignIdFor(Spare::class)->nullable()->constrained()->onDelete('set null');
             $table->timestamp('start')->nullable();
             $table->timestamp('end')->nullable();
             $table->text("description");
