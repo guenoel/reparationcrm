@@ -24,7 +24,7 @@ const activeFilters = ref([]); // Correct : tableau vide
 const itemsPerPage = ref(10); // Valeur par défaut
 
 onMounted(async () => {
-    // Check user role and set dropdown visibility
+    // Check user role and set dropdown visibility 
     const authUser = page.props.auth.user;
     if (authUser && authUser.role === 0) {
         hideUserDropdown.value = true;
