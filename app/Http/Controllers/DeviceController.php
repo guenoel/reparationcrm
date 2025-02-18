@@ -10,6 +10,7 @@ use Inertia\Inertia;
 use Log;
 use function Pest\Laravel\get;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 
 class DeviceController extends Controller
 {
@@ -234,4 +235,47 @@ class DeviceController extends Controller
         }
         $device->delete();
     }
+
+    public function getBrands()
+    {
+        $response = Http::withHeaders([
+            'x-rapidapi-key' => config('services.rapidapi.key'),
+            'x-rapidapi-host' => config('services.rapidapi.host'),
+        ])->get('https://' . config('services.rapidapi.host') . '/gsm/all-brands');
+        return response()->json($response->json());
+    }
+
+    public function getModelsByBrand($brand)
+    {
+        $response = Http::withHeaders([
+            'x-rapidapi-key' => config('services.rapidapi.key'),
+            'x-rapidapi-host' => config('services.rapidapi.host'),
+        ])->get("https://" . config('services.rapidapi.host') . "/gsm/get-models-by-brandname/{$brand}");
+
+        return response()->json($response->json());
+    }
+
+    public function getModelNumbers($brand, $model)
+    {
+        $response = Http::withHeaders([
+            'x-rapidapi-key' => config('services.rapidapi.key'),
+            'x-rapidapi-host' => config('services.rapidapi.host'),
+        ])->get("https://" . config('services.rapidapi.host') . "/gsm/get-specifications-by-brandname-modelname/{$brand}/{$model}");
+    
+        // Vérification et extraction correcte des données
+        $responseData = $response->json();
+
+        // Corrige l'accès aux données
+        $miscModels = $responseData['gsmMiscDetails']['miscModels'] ?? null;
+    
+        // Vérifier si c'est une chaîne et la transformer en tableau
+        if (is_string($miscModels)) {
+            $miscModels = array_map('trim', explode(',', $miscModels));
+        } else {
+            $miscModels = []; // Si ce n'est pas une string, on retourne un tableau vide
+        }
+        
+        return response()->json($miscModels);
+    }         
+
 }

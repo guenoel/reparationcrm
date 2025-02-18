@@ -33,6 +33,9 @@ const editMode = ref(false);
 let errors = ref([]);
 const hideUserDropdown = ref(false); // To control dropdown visibility
 const searchQuery = ref(''); // Stocke le texte de recherche
+const brands = ref([]); // Stocke la liste des marques
+const models = ref([]); // Stocke la liste des modèles de la marque sélectionnée
+const modelNumbers = ref([]); // Stocke la liste des numéros de modèles du modèle sélectionné
 
 onMounted(() => {
     // Check user role and set dropdown visibility
@@ -47,7 +50,8 @@ onMounted(() => {
         deviceId.value = page.props.route.params.id;
         getDevice();
     } else {
-        getUsers();
+        getUsers(); // Charger les utilisateurs dès que la page est chargée
+        getBrands(); // Charger les marques dès que la page est chargée
     }
 });
 
@@ -63,9 +67,45 @@ const filteredUsers = computed(() => {
 
 watch(filteredUsers, (newUsers) => {
     if (newUsers.length > 0) {
-        form.user_id = newUsers[0].id; // Prend le premier utilisateur filtré
+        form.user_id = newUsers[0].id; // Prend le premier utilisateur filtré par le champ de recherche
     }
 });
+
+watch(() => form.brand, async (newBrand) => {
+    if (newBrand) {
+        try {
+            const response = await axios.get(`/api/models/${newBrand}`);
+            models.value = response.data.map(item => item.modelValue);
+            form.model_name = ''; // Réinitialiser la sélection du modèle
+            modelNumbers.value = []; // Réinitialiser les numéros de modèle
+        } catch (error) {
+            console.error("Erreur lors de la récupération des noms de modèle :", error);
+        }
+    }
+});
+
+watch(() => form.model_name, async (newModel) => {
+    if (newModel) {
+        try {
+            const response = await axios.get(`/api/model-numbers/${form.brand}/${newModel}`);
+            // Vérifie que response.data est bien un tableau
+            modelNumbers.value = Array.isArray(response.data) ? response.data : [];
+            form.model_number = '';
+        } catch (error) {
+            console.error("Erreur lors de la récupération des numéros de modèle :", error);
+        } 
+    }
+});
+
+const getBrands = async () => {
+    try {
+        const response = await axios.get('/api/brands');
+        brands.value = response.data.map(item => item.brandValue);
+    } catch (error) {
+        console.error("Erreur lors de la récupération des marques :", error);
+    }
+};
+
 
 const getUsers = async () => {
     try {
@@ -234,13 +274,32 @@ const updateDevice = (values, actions) => {
                             <!-- coté client, si pas de services associé -->
                             <div v-if="!hideUserDropdown || !editMode || (hideUserDropdown && editMode && !form.has_service)">
                                 <p class="mb-1">Marque</p>
-                                <input type="text" class="input" id="brand" name="brand" v-model="form.brand">
+                                <select v-model="form.brand" class="input">
+                                    <option value="">Sélectionner une marque</option>
+                                    <option v-for="brand in brands" :key="brand" :value="brand">
+                                        {{ brand }}
+                                    </option>
+                                </select>
                                 <small style="color:red" v-if="errors.brand">{{ errors.brand }}</small>
+
                                 <p class="mb-1">Modèle</p>
-                                <input type="text" class="input" id="model_name" name="model_name" v-model="form.model_name">
+                                <select v-model="form.model_name" class="input" :disabled="!form.brand">
+                                    <option value="">Sélectionner un modèle</option>
+                                    <option v-for="model in models" :key="model" :value="model">
+                                        {{ model }}
+                                    </option>
+                                </select>
                                 <small style="color:red" v-if="errors.model_name">{{ errors.model_name }}</small>
-                                <p class="mb-1">No de modèle</p>
-                                <input type="text" class="input" id="model_number" name="model_number" v-model="form.model_number">
+
+                                <p class="mb-1">Numéro de modèle</p>
+                                <select v-model="form.model_number" class="input" :disabled="!form.model_name">
+                                    <option value="">Sélectionner un numéro de modèle</option>
+                                    <option v-for="number in modelNumbers" :key="number" :value="number">
+                                        {{ number }}
+                                    </option>
+                                </select>
+                                <small style="color:red" v-if="errors.model_number">{{ errors.model_number }}</small>
+
                                 <p class="mb-1">Couleur</p>
                                 <input type="text" class="input" id="color" name="color" v-model="form.color">
                                 <p class="mb-1">No de série</p>
