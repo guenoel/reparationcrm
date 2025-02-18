@@ -33,6 +33,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::put('/devices/{device}', [DeviceController::class, 'update']);
     Route::delete('/devices/{device}', [DeviceController::class,'destroy']);
 
+    Route::get('/brands', [DeviceController::class, 'getBrands']);
+    Route::get('/models/{brand}', [DeviceController::class, 'getModelsByBrand']);
+    Route::get('/model-numbers/{brand}/{model}', [DeviceController::class, 'getModelNumbers']);
+
     //SERVICES
     Route::post('/services', [ServiceController::class, 'store']);
     Route::get('/services', [ServiceController::class, 'index']);

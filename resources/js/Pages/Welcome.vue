@@ -37,7 +37,7 @@ defineProps({
                         :href="route('dashboard_admin')"
                         class="bg-white text-blue-600 font-medium rounded-md px-6 py-3 shadow-lg hover:bg-gray-100 transition"
                     >
-                        Dashboard
+                        Accéder à l'application
                     </Link>
                     <Link
                         v-if="canRegister"
