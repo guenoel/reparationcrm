@@ -150,7 +150,7 @@ const formatTaskDate = (timestamp) => {
                         <!-- <p>{{ spare.device.service.spare_type.name }}</p> -->
                         <img :src="ourSpareImage(spare.image)" />
                         <p>{{ spare.service.device.user.name }} -> {{ spare.service.device.brand }} {{ spare.service.device.model_name }}<br>-> {{ spare.service.description }}</p>
-                        <p>{{ spare.spare_type.dealer }}<br>{{ spare.spare_type.type }}<br>{{ spare.spare_type.brand }}</p>
+                        <p>{{ spare.spare_type?.dealer }}<br>{{ spare.spare_type?.type }}<br>{{ spare.spare_type?.brand }}</p>
                         <p>{{ spare.description }}</p>
                         <p>
                             {{ spare.formatted_purchase_date }}<br>

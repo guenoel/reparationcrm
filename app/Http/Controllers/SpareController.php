@@ -125,7 +125,6 @@ class SpareController extends Controller
     {
         $request->validate([
             'service_id'=> 'required',
-            'spare_type_id'=> 'required',
             'description'=> 'required',
         ]);
 
