@@ -20,7 +20,6 @@ return new class extends Migration
             $table->string('image')->default('no-image.jpg');
             $table->foreignIdFor(Service::class)->constrained()->onDelete('cascade');
             $table->foreignIdFor(User::class)->nullable()->constrained()->onDelete('set null');
-            $table->foreignIdFor(Spare::class)->nullable()->constrained()->onDelete('set null');
             $table->timestamp('start')->nullable();
             $table->timestamp('end')->nullable();
             $table->text("description");
