@@ -54,8 +54,8 @@ class Service extends Authenticatable
                 return [
                     $service->id => $service->name . ' / ' 
                         . $service->brand . ' / ' 
-                        . $service->model_name . ' / ' 
-                        . $service->serial_number . ' / ' 
+                        . ($service->model_name ?? '?') . ' / ' 
+                        . ($service->serial_number ?? '?') . ' / ' 
                         . $service->description, // Add service description
                 ];
             });
