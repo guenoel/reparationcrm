@@ -19,11 +19,11 @@ return new class extends Migration
             $table->string("image")->default('no-image.jpg');
             $table->string("brand");
             $table->string("model_name");
-            $table->string("model_number")->nullable();
-            $table->string("color")->nullable();
-            $table->string("serial_number")->nullable();
-            $table->string("imei")->nullable();
-            $table->text("description")->nullable();
+            $table->string("model_number")->nullable()->default(null);
+            $table->string("color")->nullable()->default(null);
+            $table->string("serial_number")->nullable()->default(null);
+            $table->string("imei")->nullable()->default(null);
+            $table->text("description")->nullable()->default(null);
             $table->boolean("returned")->default(false);
         });
     }

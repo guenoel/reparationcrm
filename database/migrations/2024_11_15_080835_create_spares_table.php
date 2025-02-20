@@ -22,9 +22,9 @@ return new class extends Migration
             $table->string('dealer');
             $table->string('type');
             $table->string('brand');
-            $table->text('description');
-            $table->decimal('buy_price',10,2);
-            $table->decimal('sell_price',10,2);
+            $table->text('description')->nullable()->default(null);
+            $table->decimal('buy_price',10,2)->nullable()->default(null);
+            $table->decimal('sell_price',10,2)->nullable()->default(null);
         });
 
         Schema::create('spares', function (Blueprint $table) {
@@ -32,12 +32,12 @@ return new class extends Migration
             $table->timestamps();
             $table->string("image")->default('no-image.jpg');
             $table->foreignIdFor(Service::class)->constrained()->onDelete('cascade');
-            $table->foreignIdFor(Task::class)->nullable()->constrained();
-            $table->foreignIdFor(SpareType::class)->constrained()->onDelete('cascade');
-            $table->text('description');
-            $table->timestamp('purchase_date')->nullable();
-            $table->timestamp('reception_date')->nullable();
-            $table->timestamp('return_date')->nullable();
+            $table->foreignIdFor(Task::class)->nullable()->constrained()->onDelete('set null');
+            $table->foreignIdFor(SpareType::class)->nullable()->constrained()->onDelete('set null');
+            $table->text('description')->nullable()->default(null);
+            $table->timestamp('purchase_date')->nullable()->default(null);
+            $table->timestamp('reception_date')->nullable()->default(null);
+            $table->timestamp('return_date')->nullable()->default(null);
         });
     }
 
