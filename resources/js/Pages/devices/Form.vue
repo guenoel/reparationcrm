@@ -36,6 +36,8 @@ const searchQuery = ref(''); // Stocke le texte de recherche
 const brands = ref([]); // Stocke la liste des marques
 const models = ref([]); // Stocke la liste des modèles de la marque sélectionnée
 const modelNumbers = ref([]); // Stocke la liste des numéros de modèles du modèle sélectionné
+const isLoadingUsers = ref(false); // Pour afficher le spinner de chargement
+const isDropdownOpen = ref(false); // Pour afficher la liste déroulante
 
 onMounted(() => {
     // Check user role and set dropdown visibility
@@ -58,12 +60,31 @@ onMounted(() => {
 // Propriété calculée pour filtrer les utilisateurs
 const filteredUsers = computed(() => {
     if (!searchQuery.value.trim()) {
-        return page.props.users; // Retourne tous les utilisateurs si la recherche est vide
+        //return page.props.users; // Retourne tous les utilisateurs si aucun texte n'est entré
+        return []; // Au chargement, la liste est vide jusqu'à ce que l'utilisateur tape quelque chose
     }
     return page.props.users.filter((user) =>
         user.name.toLowerCase().includes(searchQuery.value.toLowerCase())
     );
 });
+
+const selectUser = (user) => {
+    form.user_id = user.id;
+    searchQuery.value = user.name; // Met à jour l'input avec le nom sélectionné
+    isDropdownOpen.value = false; // Ferme la liste après sélection
+};
+
+const closeDropdown = () => {
+    setTimeout(() => {
+        isDropdownOpen.value = false;
+    }, 200);
+};
+
+const highlightMatch = (text) => {
+    if (!searchQuery.value) return text; // Si la recherche est vide, afficher normalement
+    const regex = new RegExp(`(${searchQuery.value})`, 'gi'); // Création d'une regex pour la correspondance
+    return text.replace(regex, '<span class="bg-yellow-300">$1</span>'); // Remplace et surligne
+};
 
 watch(filteredUsers, (newUsers) => {
     if (newUsers.length > 0) {
@@ -109,16 +130,14 @@ const getBrands = async () => {
 
 const getUsers = async () => {
     try {
-            let response = await axios.get('/api/users/new_form');
-            page.props.users = response.data.users;
-            // for pre-selecting user in dropdown menu
-            const params = new URLSearchParams(window.location.search);
-            if (!form.user_id) {
-                form.user_id = params.get('user_id');
-            }
-        } catch (error) {
-            console.error("Error fetching users:", error);
-        }
+        isLoadingUsers.value = true;
+        let response = await axios.get('/api/users/new_form');
+        page.props.users = response.data.users;
+    } catch (error) {
+        console.error("Error fetching users:", error);
+    } finally {
+        isLoadingUsers.value = false;
+    }
 };
 
 const getDevice = async () => {
@@ -251,26 +270,34 @@ const updateDevice = (values, actions) => {
                         <div class="devices__create__main--addInfo card py-2 px-2 bg-white">
                             <div v-if="!hideUserDropdown">
                                 <p class="mb-1">Utilisateur</p>
+
+                                <!-- Champ de recherche -->
                                 <input
                                     type="text"
                                     v-model="searchQuery"
                                     placeholder="Rechercher un utilisateur..."
-                                    class="input mb-2"
+                                    class="input mb-2 w-full"
+                                    @focus="isDropdownOpen = true"
+                                    @blur="closeDropdown"
                                 />
-                                <select v-model="form.user_id" class="input" id="user_id" name="user_id">
-                                    <!-- <option v-for="user in page.props.users" :key="user.id" :value="user.id">
-                                        {{ user.name }}
-                                    </option> -->
-                                    <option
-                                        v-for="user in filteredUsers"
-                                        :key="user.id"
-                                        :value="user.id"
-                                    >
-                                        {{ user.name }}
-                                    </option>
-                                </select>
+
+                                <!-- Liste déroulante -->
+                                <div v-if="isDropdownOpen && filteredUsers.length" class="absolute w-full bg-white border rounded shadow-lg z-10">
+                                    <ul>
+                                        <li 
+                                            v-for="user in filteredUsers" 
+                                            :key="user.id" 
+                                            @mousedown="selectUser(user)"
+                                            class="p-2 hover:bg-gray-200 cursor-pointer"
+                                            v-html="highlightMatch(user.name)"
+                                        >
+                                        </li>
+                                    </ul>
+                                </div>
+
                                 <small style="color:red" v-if="errors.user_id">{{ errors.user_id }}</small>
                             </div>
+
                             <!-- coté client, si pas de services associé -->
                             <div v-if="!hideUserDropdown || !editMode || (hideUserDropdown && editMode && !form.has_service)">
                                 <p class="mb-1">Marque</p>
