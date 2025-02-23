@@ -1,3 +1,7 @@
 RewriteEngine On
 RewriteCond %{REQUEST_URI} !/public
 RewriteRule ^(.*)$ public/$1 [L]
+
+<IfModule mod_headers.c>
+    Header set Content-Security-Policy "default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com; style-src 'self' https://fonts.googleapis.com; img-src 'self' data: https://trusted-images.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://api.trusted-source.com ws://127.0.0.1:5173; frame-ancestors 'none'; object-src 'none'; form-action 'self';"
+</IfModule>

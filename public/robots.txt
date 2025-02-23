@@ -1,2 +1,4 @@
 User-agent: *
-Disallow:
+Disallow: /
+
+Sitemap: https://reparation-crm.guenoel.com/sitemap.xml
