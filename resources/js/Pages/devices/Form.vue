@@ -280,7 +280,6 @@ const updateDevice = (values, actions) => {
                                     @focus="isDropdownOpen = true"
                                     @blur="closeDropdown"
                                 />
-
                                 <!-- Liste déroulante -->
                                 <div v-if="isDropdownOpen && filteredUsers.length" class="absolute w-full bg-white border rounded shadow-lg z-10">
                                     <ul>
@@ -294,7 +293,6 @@ const updateDevice = (values, actions) => {
                                         </li>
                                     </ul>
                                 </div>
-
                                 <small style="color:red" v-if="errors.user_id">{{ errors.user_id }}</small>
                             </div>
 
