@@ -148,6 +148,7 @@ const createService = (values, actions) => {
         .then((response) => {
             toast.fire({ icon: "success", title: "Appareil ajouté" });
             setTimeout(() => {
+                window.open(`/services/${response.data.service_id}/ticket`, '_blank');
                 Inertia.visit('/services/index/');
             }, 2000);
         })
@@ -167,6 +168,7 @@ const updateService = (values, actions) => {
         .then((response) => {
             toast.fire({ icon: "success", title: "Appareil modifié" });
             setTimeout(() => {
+                window.open(`/services/${serviceId.value}/ticket`, '_blank');
                 Inertia.visit('/services/index/');
         }, 2000);
         })

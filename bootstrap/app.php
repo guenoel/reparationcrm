@@ -5,6 +5,8 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use App\Http\Middleware\RoleBasedAccessControl;
 use App\Http\Middleware\ContentSecurityPolicy;
+use Barryvdh\DomPDF\ServiceProvider;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -14,14 +16,19 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->web(prepend: [
-            ContentSecurityPolicy::class, // Add CSP middleware
-        ]);
+        // $middleware->web(prepend: [
+        //     ContentSecurityPolicy::class, // Add CSP middleware
+        // ]);
+
+        // $middleware->web(prepend: [
+        //     \Spatie\Csp\AddCspHeaders::class, // Ensure CSP Middleware is registered
+        // ]);
 
         $middleware->web(append: [
             \App\Http\Middleware\HandleInertiaRequests::class,
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
-            App\Http\Middleware\ClickjackingProtection::class,
+            //\Spatie\Csp\AddCspHeaders::class,
+            //\App\Http\Middleware\ClickjackingProtection::class,
         ]);
 
         // Sanctum middleware for APIs
@@ -35,4 +42,9 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
-    })->create();
+    })
+    ->withProviders([
+        ServiceProvider::class, // Ajoute DomPDF au système de providers
+        App\Providers\PdfServiceProvider::class, // Ajoute l'alias PDF
+    ])
+    ->create();
