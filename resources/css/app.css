@@ -162,8 +162,8 @@ main h1 ~ p {
 }
 
 .services__list__heading {
-    -ms-grid-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 80px 160px 160px;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 80px 160px 160px;
+    -ms-grid-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 80px 160px 160px 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 80px 160px 160px 1fr;
 }
 
 .tasks__list__heading {
@@ -210,8 +210,8 @@ main h1 ~ p {
     border-bottom: 1px solid #e0e0e0;
     /* -ms-grid-columns: 80px 1fr 1fr 1fr 1fr 80px;
     grid-template-columns: 80px 1fr 1fr 1fr 1fr 80px; */
-    -ms-grid-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 80px 160px 160px;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 80px 160px 160px;
+    -ms-grid-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 80px 160px 160px 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 80px 160px 160px 1fr;
 }
 
 .tasks__list__item {

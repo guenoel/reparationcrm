@@ -10,6 +10,8 @@ use Inertia\Inertia;
 use Log;
 use function Pest\Laravel\get;
 use Illuminate\Support\Facades\Auth;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\View;
 
 class ServiceController extends Controller
 {
@@ -228,6 +230,32 @@ class ServiceController extends Controller
         } catch (\Exception $e) {
             Log::error('Error deleting service:', ['error' => $e->getMessage()]);
             return response()->json(['error' => 'An error occurred while deleting the service'], 500);
+        }
+    }
+
+    public function generateTicket($id)
+    {
+        try {
+            $service = Service::with('device.user')->findOrFail($id);
+
+            if (!$service) {
+                return response()->json(['error' => 'Service introuvable'], 404);
+            }
+            // Définition des données pour la vue PDF
+            $data = [
+                'service' => $service,
+                'device' => $service->device,
+                'user' => $service->device->user
+            ];
+
+            // Génération du PDF avec une largeur de 58mm (220px environ)
+            $pdf = Pdf::loadView('pdf.ticket', $data)->setPaper([0, 0, 220, 600]);
+
+            // Téléchargement ou affichage dans le navigateur
+            return $pdf->stream('ticket_service_'.$id.'.pdf');
+        } catch (\Exception $e) {
+            Log::error('Erreur génération ticket : ' . $e->getMessage());
+            return response()->json(['error' => 'Une erreur est survenue lors de la génération du ticket'], 500);
         }
     }
 }

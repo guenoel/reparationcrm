@@ -4,16 +4,6 @@ import { Head, Link } from '@inertiajs/vue3';
 import axios from 'axios';
 import { ref, onMounted, watch, computed } from 'vue';
 import { Inertia } from '@inertiajs/inertia';
-//import { useRoute, useRouter } from 'vue-router';
-
-//const router = useRouter()
-
-// defineProps({
-//     devices: {
-//         type: Array,
-//         required: true
-//     }
-// });
 
 let devices = ref([]);
 let links = ref([]);
@@ -29,11 +19,6 @@ watch(searchQuery, () => {
     getDevices();
 });
 
-//const newDevice = () => {
-//    //router.push('/devices/create')
-//    Inertia.visit('/devices/create')
-//}
-
 const getRowClass = (device) => {
     if (!device.returned) {
         return 'bg-green-300'; // Vert clair
@@ -41,7 +26,7 @@ const getRowClass = (device) => {
     return 'bg-gray-200'; // Classe par défaut
 };
 
-// Filtrer les services en fonction des classes sélectionnées
+// Filtrer les devices en fonction des classes sélectionnées
 const filteredDevices = computed(() => {
     if (activeFilters.value.length === 0) {
         return devices.value; // Aucun filtre actif, retourner tous les services
