@@ -20,8 +20,6 @@ class ClickjackingProtection
         $cspPolicy = "default-src 'self';
                       frame-ancestors 'none';"; // 'none' blocks all embedding in iframes
 
-        $response->headers->set('Content-Security-Policy', $cspPolicy);
-
         return $response;
     }
 }

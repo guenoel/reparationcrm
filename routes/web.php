@@ -6,6 +6,8 @@ use App\Http\Controllers\DeviceController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\PdfController;
+use App\Http\Controllers\ServiceController;
 //use App\Http\Controllers\DeviceController;
 //use App\Http\Controllers\DashboardController;
 
@@ -17,6 +19,9 @@ Route::get('/', function () {
         'phpVersion' => PHP_VERSION,
     ]);
 })->name('welcome');
+
+Route::get('/generate-pdf', [PdfController::class, 'generatePdf'])->name('generate.pdf');
+Route::get('/services/{id}/ticket', [ServiceController::class, 'generateTicket'])->name('service.ticket');
 
 Route::middleware(['auth', 'verified', 'role-based-access-control'])->group(function () {
     //DASHBOARDS

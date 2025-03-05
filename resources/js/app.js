@@ -5,10 +5,22 @@ import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createApp, h } from 'vue';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
-//import router from './router';
 import Swal from 'sweetalert2';
 
-window.Swal = Swal
+// ✅ Apply nonce to dynamically created scripts & styles
+document.addEventListener("DOMContentLoaded", () => {
+    const nonce = window.nonce || '';
+
+    document.querySelectorAll("script").forEach(script => {
+        script.setAttribute("nonce", nonce);
+    });
+
+    document.querySelectorAll("style").forEach(style => {
+        style.setAttribute("nonce", nonce);
+    });
+});
+
+window.Swal = Swal;
 const toast = Swal.mixin({
     toast: true,
     position: 'top-end',
@@ -30,7 +42,6 @@ createInertiaApp({
     setup({ el, App, props, plugin }) {
         return createApp({ render: () => h(App, props) })
             .use(plugin)
-            //.use(router)
             .use(ZiggyVue)
             .mount(el);
     },

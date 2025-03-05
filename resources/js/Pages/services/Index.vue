@@ -156,6 +156,10 @@ const deleteService = (id) => {
         }
     });
 };
+
+const redirectToTicket = (serviceId) => {
+    window.open(`/services/${serviceId}/ticket`, '_blank');
+};
 </script>
 
 <template>
@@ -289,6 +293,11 @@ const deleteService = (id) => {
                         <div v-if="!hideUserDropdown">
                             <Link href="/spares/create" class="btn btn-secondary my-1" @click="redirectToSpareForm(service.id)">
                             Ajouter une pièce
+                            </Link>
+                        </div>
+                        <div v-if="!hideUserDropdown">
+                            <Link href="#" class="btn btn-secondary my-1" @click.prevent="redirectToTicket(service.id)">
+                            Ticket
                             </Link>
                         </div>
                     </div>
