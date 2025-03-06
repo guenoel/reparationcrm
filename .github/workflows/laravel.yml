@@ -65,10 +65,10 @@ jobs:
         DB_USERNAME: laravel_user
         DB_PASSWORD: password
       run: php artisan test
-
-    - name: Send deployment webhook
-      if: success()
-      run: |
-        curl -X POST ${{ secrets.DEPLOY_WEBHOOK_URL }} \
-        -H "Content-Type: application/json" \
-        -d '{"ref": "master", "build_status": "success", "repository": "${{ github.repository }}", "commit": "${{ github.sha }}"}'
+    - name: Sync Files
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      with:
+        server: ${{ secrets.FTP_SERVER }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        server-dir: /
