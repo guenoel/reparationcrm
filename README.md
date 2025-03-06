@@ -13,10 +13,10 @@ I recommend doing the first three steps by installing [AMPPS](https://ampps.com/
 - Clone this repository: ```git clone git@github.com:guenoel/reparationcrm.git```
 - configure .env file and place it at the root of the project: [Here an example of .env file](./.env.example)
 - subscribe to the rapidapi host: [mobile-phone-specs-database](https://rapidapi.com/makingdatameaningful/api/mobile-phone-specs-database) and paste the key in the .env file
-- ```install npm```
 - ```install composer```
 - ```php artisan key:generate```
 - ```php artisan serve```
+- ```install npm```
 - ```npm run dev```
 
 You can know access the web site on http://localhost:8000/ (by default)
