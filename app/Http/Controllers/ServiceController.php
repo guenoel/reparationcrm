@@ -145,7 +145,10 @@ class ServiceController extends Controller
                 $device->save();
             }
         
-            return response()->json(['message' => 'Service created successfully'], 201);
+            return response()->json([
+                'message' => 'Service created successfully',
+                'service_id' => $service->id
+            ], 201);
         } catch (\Illuminate\Validation\ValidationException $e) {
             // Capturer les erreurs de validation et retourner un code 422
             return response()->json(['errors' => $e->errors()], 422);
