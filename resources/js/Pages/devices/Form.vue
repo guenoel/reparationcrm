@@ -19,8 +19,7 @@ const form = reactive({
     color: '',
     serial_number: '',
     imei: '',
-    description: '',
-    returned: ''
+    description: ''
 });
 
 //const router = useRouter()
@@ -161,7 +160,6 @@ const getDevice = async () => {
                 form.serial_number = response.data.device.serial_number;
                 form.imei = response.data.device.imei;
                 form.description = response.data.device.description;
-                form.returned = response.data.device.returned;
                 form.has_service = Boolean(response.data.device.has_service);
             }
 
@@ -342,19 +340,6 @@ const updateDevice = (values, actions) => {
                                 <p class="mb-1">Numéro de série: {{ form.serial_number }}</p>
                                 <p class="mb-1">imei: {{ form.imei }}</p>
                                 <p class="mb-1">Description: {{ form.description }}</p>
-                            </div>
-                            <div v-if="!hideUserDropdown">
-                                <p class="mb-1">Restitué au client ?</p>
-                                <select v-model="form.returned" class="input" id="returned" name="returned" default="0">
-                                    <option value="0">Non</option>
-                                    <option value="1">Oui</option>
-                                </select>
-                            </div>
-                            <div v-if="hideUserDropdown && form.returned == 0 && editMode">
-                                <p>Appareil non restitué</p>
-                            </div>
-                            <div v-if="hideUserDropdown && form.returned == 1 && editMode">
-                                <p>Appareil restitué</p>
                             </div>
                             <div class="devices__create__main--media--images mt-2">
                                 <ul class="devices__create__main--media--images--list list-unstyled">

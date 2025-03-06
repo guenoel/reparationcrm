@@ -19,6 +19,7 @@ class Service extends Authenticatable
         'price',
         'price_paid',
         'done',
+        'returned',
         'created_at',
         'updated_at',
     ];

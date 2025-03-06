@@ -155,7 +155,6 @@ class DeviceController extends Controller
         $device->serial_number = $request->serial_number ?? null;
         $device->imei = $request->imei ?? null;
         $device->description = $request->description ?? '';
-        $device->returned = $request->returned ?? false;
         $device->save();
     }
 
@@ -215,7 +214,6 @@ class DeviceController extends Controller
         $device->serial_number = $request->serial_number ?? $device->serial_number;
         $device->imei = $request->imei ?? $device->imei;
         $device->description = $request->description ?? $device->description;
-        $device->returned = $request->returned ?? $device->returned;
         $device->save();
 
         return response()->json(['message' => 'Device updated successfully']);

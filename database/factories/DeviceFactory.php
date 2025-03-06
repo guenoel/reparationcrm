@@ -37,7 +37,6 @@ class DeviceFactory extends Factory
             'serial_number' => $this->faker->optional()->uuid(), // Numéro de série aléatoire
             'imei' => $this->faker->optional()->numerify('###############'), // 15 chiffres pour un IMEI fictif
             'description' => $this->faker->optional()->text(200), // Description optionnelle
-            'returned' => $this->faker->boolean(20), // 20% de chance d’être retourné
         ];
     }
 }

@@ -18,7 +18,8 @@ const form = reactive({
     deposit_paid: false,
     price: null,
     price_paid: false,
-    done: false
+    done: false,
+    returned: false
 });
 
 //const router = useRouter()
@@ -125,7 +126,7 @@ const getService = async () => {
                 form.price = response.data.service.price;
                 form.price_paid = Boolean(response.data.service.price_paid);
                 form.done = Boolean(response.data.service.done);
-                form.returned = Boolean(response.data.service.device.returned);
+                form.returned = Boolean(response.data.service.returned);
             }
 
         } catch (error) {

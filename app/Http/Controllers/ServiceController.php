@@ -138,12 +138,6 @@ class ServiceController extends Controller
             ]);
         
             $service = Service::create($validatedData);
-
-            $device = $service->device; // Relation entre Service et Device
-            if ($device) {
-                $device->returned = $validatedData['returned'] ?? false;
-                $device->save();
-            }
         
             return response()->json([
                 'message' => 'Service created successfully',
@@ -199,14 +193,8 @@ class ServiceController extends Controller
         $service->price = $request->price;
         $service->price_paid = $request->price_paid;
         $service->done = $request->done;
+        $service->returned = $request->returned;
         $service->save();
-
-        // Mise à jour de la valeur "returned" du device associé
-        $device = $service->device; // Relation entre Service et Device
-        if ($device) {
-            $device->returned = $request->returned;
-            $device->save(); // Enregistrer les modifications sur le device
-        }
 
         return response()->json(['message' => 'Service updated successfully']);
     }

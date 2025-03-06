@@ -23,6 +23,7 @@ return new class extends Migration
             $table->decimal('price', 10, 2)->nullable()->default(null);
             $table->boolean('price_paid')->default(false);
             $table->boolean('done')->default(false);
+            $table->boolean('returned')->default(false);
         });
     }
 

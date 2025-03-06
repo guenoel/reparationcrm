@@ -34,6 +34,7 @@ class ServiceFactory extends Factory
             'price' => $this->faker->optional()->randomFloat(2, 50, 500), // Prix optionnel entre 50 et 500€
             'price_paid' => $this->faker->boolean(40), // 40% de chance que le prix soit payé
             'done' => $this->faker->boolean(60), // 60% de chance que le service soit terminé
+            'returned' => $this->faker->boolean(70), // 70% de chance que l'appareil soit retourné
         ];
     }
 }

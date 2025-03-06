@@ -24,7 +24,6 @@ return new class extends Migration
             $table->string("serial_number")->nullable()->default(null);
             $table->string("imei")->nullable()->default(null);
             $table->text("description")->nullable()->default(null);
-            $table->boolean("returned")->default(false);
         });
     }
 

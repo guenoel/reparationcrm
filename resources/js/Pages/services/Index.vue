@@ -44,31 +44,31 @@ watch(searchQuery, () => {
 
 // Déterminer la classe de la ligne en fonction des conditions
 const getRowClass = (service) => {
-    if (!service.price_paid && !service.accepted && !service.done && service.device.returned) {
+    if (!service.price_paid && !service.accepted && !service.done && service.returned) {
         return 'bg-gray-200'; // Gris clair
     }
-    if (!service.price_paid && !service.accepted && !service.done && !service.device.returned) {
+    if (!service.price_paid && !service.accepted && !service.done && !service.returned) {
         return 'bg-orange-300'; // Orange
     }
-    if (service.price_paid && !service.accepted && !service.done && !service.device.returned) {
+    if (service.price_paid && !service.accepted && !service.done && !service.returned) {
         return 'bg-orange-500'; // Orange foncé
     }
-    if (!service.price_paid && service.accepted && !service.done && !service.device.returned) {
+    if (!service.price_paid && service.accepted && !service.done && !service.returned) {
         return 'bg-blue-300'; // bleu clair
     }
-    if (service.price_paid && service.accepted && !service.done && !service.device.returned) {
+    if (service.price_paid && service.accepted && !service.done && !service.returned) {
         return 'bg-blue-500'; // bleu moyen
     }
-    if (!service.price_paid && service.accepted && service.done && !service.device.returned) {
+    if (!service.price_paid && service.accepted && service.done && !service.returned) {
         return 'bg-green-300'; // Vert clair
     }
-    if (service.price_paid && service.accepted && service.done && !service.device.returned) {
+    if (service.price_paid && service.accepted && service.done && !service.returned) {
         return 'bg-green-700'; // Vert foncé
     }
-    if (service.price_paid && service.accepted && service.done && service.device.returned) {
+    if (service.price_paid && service.accepted && service.done && service.returned) {
         return 'bg-gray-500'; // Gris foncé
     }
-    if (!service.price_paid && service.accepted && service.done && service.device.returned) {
+    if (!service.price_paid && service.accepted && service.done && service.returned) {
         return 'bg-red-500'; // Rouge
     }
     

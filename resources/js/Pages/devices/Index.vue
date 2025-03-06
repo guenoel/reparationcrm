@@ -20,10 +20,10 @@ watch(searchQuery, () => {
 });
 
 const getRowClass = (device) => {
-    if (!device.returned) {
-        return 'bg-green-300'; // Vert clair
-    }
-    return 'bg-gray-200'; // Classe par défaut
+    // Vérifier si au moins un service a returned à 0
+    const hasUnreturnedService = device.services.some(service => service.returned === 0);
+
+    return hasUnreturnedService ? 'bg-green-300' : 'bg-gray-200';
 };
 
 // Filtrer les devices en fonction des classes sélectionnées
