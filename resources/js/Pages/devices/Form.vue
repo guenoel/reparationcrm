@@ -297,7 +297,8 @@ const updateDevice = (values, actions) => {
                             <!-- coté client, si pas de services associé -->
                             <div v-if="!hideUserDropdown || !editMode || (hideUserDropdown && editMode && !form.has_service)">
                                 <p class="mb-1">Marque</p>
-                                <select v-model="form.brand" class="input">
+                                <input v-if="brands.length === 0" type="text" class="input" id="brand" name="brand" v-model="form.brand">
+                                <select v-else v-model="form.brand" class="input">
                                     <option value="">Sélectionner une marque</option>
                                     <option v-for="brand in brands" :key="brand" :value="brand">
                                         {{ brand }}
@@ -306,16 +307,18 @@ const updateDevice = (values, actions) => {
                                 <small style="color:red" v-if="errors.brand">{{ errors.brand }}</small>
 
                                 <p class="mb-1">Modèle</p>
-                                <select v-model="form.model_name" class="input" :disabled="!form.brand">
+                                <input v-if="brands.length === 0" type="text" class="input" id="model_name" name="model_name" v-model="form.model_name">
+                                <select v-else v-model="form.model_name" class="input" :disabled="!form.brand">
                                     <option value="">Sélectionner un modèle</option>
-                                    <option v-for="model in models" :key="model" :value="model">
+                                    <option v-for="model in models" :key="model" :value="model" :title="model">
                                         {{ model }}
                                     </option>
                                 </select>
                                 <small style="color:red" v-if="errors.model_name">{{ errors.model_name }}</small>
 
                                 <p class="mb-1">Numéro de modèle</p>
-                                <select v-model="form.model_number" class="input" :disabled="!form.model_name">
+                                <input v-if="brands.length === 0" type="text" class="input" id="model_number" name="model_number" v-model="form.model_number">
+                                <select v-else v-model="form.model_number" class="input" :disabled="!form.model_name">
                                     <option value="">Sélectionner un numéro de modèle</option>
                                     <option v-for="number in modelNumbers" :key="number" :value="number">
                                         {{ number }}

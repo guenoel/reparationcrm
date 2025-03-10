@@ -7,6 +7,7 @@ use App\Http\Middleware\RoleBasedAccessControl;
 use App\Http\Middleware\ContentSecurityPolicy;
 use Barryvdh\DomPDF\ServiceProvider;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Vite;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -27,7 +28,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             \App\Http\Middleware\HandleInertiaRequests::class,
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
-            //\Spatie\Csp\AddCspHeaders::class,
+            \Spatie\Csp\AddCspHeaders::class,
+            //\Spatie\Csp\CspServiceProvider::class,
             //\App\Http\Middleware\ClickjackingProtection::class,
         ]);
 

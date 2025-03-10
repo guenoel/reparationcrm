@@ -7,6 +7,7 @@ export default defineConfig({
         laravel({
             input: 'resources/js/app.js',
             refresh: true,
+            //csp: true,
         }),
         vue({
             template: {
@@ -17,4 +18,9 @@ export default defineConfig({
             },
         }),
     ],
+    server: {
+        headers: {
+            'Content-Security-Policy': `script-src 'self' 'unsafe-eval';`
+        }
+    }
 });

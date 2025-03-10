@@ -25,6 +25,7 @@ return [
     /*
      * The nonce generator class.
      */
-    'nonce_generator' => Spatie\Csp\Nonce\RandomString::class,
+    //'nonce_generator' => Spatie\Csp\Nonce\RandomString::class,
+    'nonce_generator' => App\Support\LaravelViteNonceGenerator::class,
 ];
 

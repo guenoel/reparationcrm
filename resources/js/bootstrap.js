@@ -3,6 +3,18 @@ import axios from 'axios';
 axios.defaults.withCredentials = true;
 axios.defaults.headers.common['Accept'] = 'application/json';
 
+// Récupération du nonce depuis le DOM
+const nonceMeta = document.querySelector('meta[name="csp-nonce"]');
+window.cspNonce = nonceMeta ? nonceMeta.getAttribute('content') : '';
+
+console.log("🚀 CSP Nonce récupéré dans bootstrap.js:", window.cspNonce);
+
+// Appliquer le nonce après chargement du DOM
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll("script, style").forEach(el => {
+        el.setAttribute("nonce", window.cspNonce);
+    });
+});
 
 const csrfToken = document.cookie
     .split('; ')
@@ -14,12 +26,6 @@ if (csrfToken) {
 } else {
     console.error('CSRF token not found in cookies.');
 }
-
-// Fetch Bearer token from cookies or local storage
-// const bearerToken = document.cookie
-//     .split('; ')
-//     .find(row => row.startsWith('Authorization='))
-//     ?.split('=')[1];
 
 // Charger le token depuis le localStorage
 const token = localStorage.getItem('Authorization');

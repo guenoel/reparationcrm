@@ -7,16 +7,16 @@ import { createApp, h } from 'vue';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 import Swal from 'sweetalert2';
 
-// ✅ Apply nonce to dynamically created scripts & styles
+// Récupération du nonce depuis le DOM
+const nonceMeta = document.querySelector('meta[name="csp-nonce"]');
+window.cspNonce = nonceMeta ? nonceMeta.getAttribute('content') : '';
+
+console.log("🚀 Nonce chargé dans Vue.js:", window.cspNonce);
+
+// Appliquer le nonce aux scripts et styles injectés dynamiquement
 document.addEventListener("DOMContentLoaded", () => {
-    const nonce = window.nonce || '';
-
-    document.querySelectorAll("script").forEach(script => {
-        script.setAttribute("nonce", nonce);
-    });
-
-    document.querySelectorAll("style").forEach(style => {
-        style.setAttribute("nonce", nonce);
+    document.querySelectorAll("script, style").forEach(el => {
+        el.setAttribute("nonce", window.cspNonce);
     });
 });
 

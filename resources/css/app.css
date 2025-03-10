@@ -555,14 +555,3 @@ main h1 ~ p {
 .bg-red-500 {
     background-color: #ff0000; /* Rouge */
 }
-
-.select-pagination {
-    float: right; /* Aligne la liste déroulante à droite */
-    margin-left: auto;
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: #fff;
-    width: 80px;
-}
-
